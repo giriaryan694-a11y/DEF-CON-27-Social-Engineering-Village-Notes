@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .security-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+
+        .security-card h4 {
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .stat-grid, .lesson-grid, .security-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Jayson E. Street - I PWN thee I PWN thee not</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../16" class="nav-btn">← Previous Talk</a>
+            <a href="../18" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Jayson E. Street, Security Awareness Advocate & Social Engineering Specialist</p>
+            <p><strong>Background:</strong> 10+ years speaking at DEF CON, security awareness engagements, author, and social engineering expert</p>
+            <p><strong>Key Focus:</strong> Practical security insights - what attackers love vs. hate, and actionable security awareness strategies</p>
+        </div>
+        
+        <div class="section">
+            <h2>Introduction: The Reality of Security Testing</h2>
+            <p>Jayson E. Street shares his unique perspective on security testing, focusing on practical, low-tech social engineering approaches that consistently bypass high-tech security measures.</p>
+            
+            <div class="key-point">
+                <strong>Testing Philosophy:</strong> "I'm not a red teamer... I do security awareness engagements. I'm trying to teach them to be more security aware. I'm not trying to break something, I'm trying to help build something."
+            </div>
+            
+            <h3>Core Approach:</h3>
+            <ul>
+                <li>Spends less than 2 hours on Google research (no Maltego, no Recon-ng)</li>
+                <li>Walks into buildings to see what access he can gain</li>
+                <li>Has stolen computers from behind teller lines in banks</li>
+                <li>Focuses on human vulnerabilities rather than technical exploits</li>
+                <li>Uses minimal tools for maximum impact</li>
+            </ul>
+
+            <div class="quote-box">
+                "Social engineering is so easy even I can do it... If I'm your common denominator, if I'm your threat model, you've got problems that you need to address."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>What Attackers Love: Security Weaknesses We Enable</h2>
+            
+            <div class="security-grid">
+                <div class="security-card">
+                    <h4>Uneducated Employees</h4>
+                    <p>"Employees not empowered or educated to question the unusual." Smart employees who know their jobs but haven't been told security is part of their responsibility.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>False Sense of Security</h4>
+                    <p>"The only thing worse than no security is a false sense of security." Once past initial security layers, people assume they're safe inside "secured" buildings.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>USB Charger Attacks</h4>
+                    <p>USB Ninja Cable demonstration: Plugged into 8 computers with no phone attached, deployed payloads, and not one person questioned the unusual behavior.</p>
+                </div>
+            </div>
+
+            <h3>Real-World Attack Example:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>USB "Writes Check" Pretext</h4>
+                    <p>"Excuse me, I'm doing a USB writes check - we're making sure our domain policy doesn't allow you to charge devices on your computers."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Payload Deployment</h4>
+                    <p>Notepad automatically types: "Two tests completed successfully. Thank you for your cooperation. 😊" - clearly suspicious behavior ignored by all targets.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Psychological Factors</h4>
+                    <p>People accept authority figures, don't question unusual technical behavior, and prioritize being helpful over being secure.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Kaspersky Security Example:</strong> "In Moscow at Kaspersky headquarters, security guard immediately approached me before I even sat down. 'Comrade, can I help you get to reception? Are you meeting someone?' That's what proper security looks like - engaged, observant, and proactive."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Critical Infrastructure Failures</h2>
+            
+            <h3>Egress Filtering & Internal Monitoring:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Network Monitoring Failures</h4>
+                    <p>"Why in the world is Bob in accounting able to telnet to the Netherlands without anybody wondering why that's going on?" Lack of egress filtering enables data exfiltration.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Sony Data Breach Example</h4>
+                    <p>"How can you lose 1.83 terabytes of data from your network and not have someone think about what's going on here? Your networking department should've at least said 'Hey, do we need to increase the bandwidth?'"</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Internal Network Assumptions</h4>
+                    <p>"People keep assuming their internal networks are safe. I'm sorry, the attack is coming from within the house." Users initiate outbound connections that establish command and control channels.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Network Security Reality:</strong> "If you're not monitoring your internal network, don't worry - eventually I will be. And that's not something you really want."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>What Attackers Hate: Effective Security Measures</h2>
+            
+            <h3>Multi-Factor Authentication & Segmentation:</h3>
+            <div class="security-grid">
+                <div class="security-card">
+                    <h4>Dual Factor Authentication</h4>
+                    <p>"What a bummer! I get to a door and there's a keypad. I'm like 'Oh well, this was unexpected.' Forces attackers to social engineer entry or find alternatives.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>Proper Keypad Security</h4>
+                    <p>Avoid worn keypads that reveal common codes (1,2,3,4 patterns). Use changing combinations and ensure codes aren't predictable.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>Network Segmentation</h4>
+                    <p>Segment office buildings so access to different areas requires additional authentication. "That will stop or delay attackers - it's about delaying the attacks."</p>
+                </div>
+            </div>
+
+            <h3>Security Investment Analogy:</h3>
+            <div class="quote-box">
+                "Explain it to your executives: The more money they spend, the longer you can withstand an attack before it gets detected, before it gets responded to. You're not trying to stop the risk, you're trying to mitigate as much as you can."
+            </div>
+
+            <div class="offensive-point">
+                <strong>Executive Communication:</strong> "Use the fireproof safe analogy: They're fireproof up to 3 hours, 6 hours, 12 hours. The more money you spend, the longer your safe can withstand a fire. Same with security - more investment means longer attack resistance."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Policy & Procedure Enforcement Failures</h2>
+            
+            <h3>Real-World Security Breaches:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Air Force Base Breach</h4>
+                    <p>Civilians breached an Air Force Base in Nevada, only discovered when one told an airman she'd been kidnapped. Guards failed to notice suspicious vehicle entry.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Cold War Missile Theft</h4>
+                    <p>Russian agent entered German Air Force Base, took missile from jet fighter, wheeled it to Mercedes, and smuggled it piece by piece back to Russia - with proper red tag compliance.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Executive Exemptions</h4>
+                    <p>"If your CEO has an exemption on the password reset policy, congratulations - you don't have a security policy." Policies must apply equally to all employees.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Policy Enforcement Reality:</strong> "If your executives think security policies don't apply to them, the people they report to think it doesn't matter to them either. By the time you finish, within six months no one is actually following the policy."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Insider Threat Realities</h2>
+            
+            <h3>Types of Insider Threats:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Malicious Insiders</h4>
+                    <p>Robert Hanssen - FBI agent who maliciously compromised security for personal gain. Clear malicious intent and execution.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Well-Intentioned Insiders</h4>
+                    <p>TSA employee who published pictures of TSA keys online. Best intentions but catastrophic security impact.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Productivity-Driven Insiders</h4>
+                    <p>Bank executive who installed wireless router under conference table to access email during meetings. Not malicious, just prioritizing productivity over security.</p>
+                </div>
+            </div>
+
+            <h3>Border Patrol Data Breach Case Study:</h3>
+            <ul>
+                <li>Contractor moved data to internal network against policy</li>
+                <li>Contractor compromised, data stolen</li>
+                <li>Homeland Security claimed "searched dark web, you're good"</li>
+                <li>Reporter found 300GB of data available for download hours later</li>
+                <li>Multiple insider threats: policy violation, inadequate response, false assurances</li>
+            </ul>
+
+            <div class="quote-box">
+                "Not all insider threats come from the bad guy. Sometimes it just comes from human stupidity. Sometimes we just go 'Duh, maybe I should have done that.'"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Innovative Security Awareness Strategies</h2>
+            
+            <h3>Gamification & Positive Reinforcement:</h3>
+            <div class="security-grid">
+                <div class="security-card">
+                    <h4>Where's Waldo Security</h4>
+                    <p>One employee wears Waldo picture on valid ID badge. Employees who spot Waldo get $100 gift card. Makes people look at badges and be security conscious.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>Home Security Training</h4>
+                    <p>Teach employees to configure home routers, change privacy settings, protect children online. They'll bring that security consciousness back to work.</p>
+                </div>
+                
+                <div class="security-card">
+                    <h4>Personal Benefit Focus</h4>
+                    <p>"They still are never going to care about your data, but you can make them be concerned about security in other ways by showing what's in it for them."</p>
+                </div>
+            </div>
+
+            <h3>Social Media Awareness:</h3>
+            <ul>
+                <li>Hashtag searches: #newjob #newbadge reveal corporate security information</li>
+                <li>Bank Facebook page showing badges at company barbecue</li>
+                <li>Spear phishing using only About page and Twitter information</li>
+                <li>CEO clicked phishing link within 12 hours using only public information</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Social Engineering Reality:</strong> "I don't scan your network, I don't scan your firewalls - I scan Twitter. I scan your About page. That's the information that convinces the person to click the link."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Practical Security Metrics & Testing</h2>
+            
+            <h3>Essential Security Metrics:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Threat Detection Metrics</h4>
+                    <p>Quarantined emails, virus detections, firewall alerts, IPS rules triggered, investigation actions. Tangible numbers that show security team activity.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Patch Management Metrics</h4>
+                    <p>Servers/workstations patched, antivirus definition update speed, Microsoft patch deployment time. Shows vulnerability management effectiveness.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Phishing Test Metrics</h4>
+                    <p>Click rates, reporting rates, repeat offenders. But never share individual names with executives - focus on trends and education.</p>
+                </div>
+            </div>
+
+            <h3>Security System Testing:</h3>
+            <ul>
+                <li>Send malicious packets to firewalls to verify blocking</li>
+                <li>Test IDS/IPS with actual attack patterns, not just eicar</li>
+                <li>Run ransomware in segmented environments to test endpoint protection</li>
+                <li>Verify security products work beyond sales demonstrations</li>
+                <li>Avoid default configurations (Snort examples)</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>Budget Justification Strategy:</strong> "The better you are, the less you're seen. You have to show them numbers, show them metrics. When executives see Game of Thrones action figures and nerf guns, they may question why they have these guys here. Show them you're getting their money's worth."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Core Philosophy & Actionable Recommendations</h2>
+            
+            <h3>10-Year DEF CON Message:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>People Are The Solution</h4>
+                    <p>"Your people are your solution, not your liability. Fix them. Stop trying to offset your failings and misconfigurations onto them."</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Education Over Technology</h4>
+                    <p>"Stop trying to create technology to fix your users. Start getting your users on board to protect your technology."</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Security Responsibility</h4>
+                    <p>Make security part of job responsibilities. "Employees are going to do only what is required for them to keep their job."</p>
+                </div>
+            </div>
+
+            <h3>Phishing Response Recommendations:</h3>
+            <ol>
+                <li><strong>First click:</strong> Re-education and security awareness training</li>
+                <li><strong>Second click:</strong> More stringent training with restricted access</li>
+                <li><strong>Third click:</strong> Termination or severe penalties</li>
+                <li><strong>Rationale:</strong> "You don't let a delivery driver wreck three company vans without consequences"</li>
+            </ol>
+
+            <div class="quote-box">
+                "I only have one major message after 10 years of speaking at DEF CON: Your people are your solution, not your liability. Educate and empower your users. We need to make them understand that they are part of your solution, not part of the problem."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Security Teams</h2>
+            
+            <h3>Essential Security Principles:</h3>
+            <ol>
+                <li><strong>Educate and empower users</strong> - They are your first line of defense, not your weakest link</li>
+                <li><strong>Enforce policies equally</strong> - No executive exemptions for security policies</li>
+                <li><strong>Implement multi-factor authentication</strong> - Physical and digital access control</li>
+                <li><strong>Monitor internal networks</strong> - Attacks come from inside as much as outside</li>
+                <li><strong>Test security systems regularly</strong> - Don't rely on vendor demonstrations</li>
+                <li><strong>Use gamification for awareness</strong> - Make security engaging and rewarding</li>
+                <li><strong>Track meaningful metrics</strong> - Demonstrate security team value and effectiveness</li>
+                <li><strong>Focus on human layer security</strong> - Layer 8 (human layer) is often the most vulnerable</li>
+                <li><strong>Segment networks and facilities</strong> - Delay and contain attacks</li>
+                <li><strong>Make security personal</strong> - Teach home security to improve workplace security</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Assessment:</strong> "The security landscape is getting better because we're understanding it's not just technology. More people are looking into social engineering and realizing the human element is your biggest point of failure and how to protect against it."
+            </div>
+
+            <h3>Red Team Applications:</h3>
+            <ul>
+                <li>Focus on low-tech social engineering over complex technical attacks</li>
+                <li>Use minimal OSINT (2 hours Google research) for effective targeting</li>
+                <li>Test physical security with simple pretexts and basic tools</li>
+                <li>Evaluate employee security awareness through realistic scenarios</li>
+                <li>Measure organizational resilience to social engineering attacks</li>
+                <li>Provide actionable recommendations for security awareness improvement</li>
+            </ul>
+
+            <div class="quote-box">
+                "I don't have to bypass your firewall if I can bypass your receptionist. I don't scan your network, I scan Twitter. I scan your About page. That's the information that I gather that convinces the person to click the link."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../16" class="nav-btn">← Previous Talk</a>
+            <a href="../18" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Jayson E. Street I PWN Thee Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
