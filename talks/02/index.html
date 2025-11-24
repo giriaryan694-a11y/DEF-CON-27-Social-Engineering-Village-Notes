@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27: Wayne Ronaldson</title>
+    <style>
+        /* * 1. CSS Variables for Theming 
+         */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-color: #d40000; /* DEF CON Red */
+            --header-sub-color: #555;
+            --code-bg-color: #eee;
+            --shadow-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme {
+            --bg-color: #2b2b2b;
+            --text-color: #f1f1f1;
+            --border-color: #555;
+            --header-color: #ff4141; /* Lighter Red for dark bg */
+            --header-sub-color: #ccc;
+            --code-bg-color: #444;
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        /* * 2. General Body Styles (using variables)
+         */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        /* * 3. Theme Toggle Button Styles
+         */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: var(--code-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* * 4. Content Styles (using variables)
+         */
+        h1 {
+            color: var(--header-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--header-sub-color);
+            font-style: italic;
+            font-weight: normal;
+            font-size: 1.2em;
+            margin-top: -10px;
+        }
+        h3 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code, pre {
+            background-color: var(--code-bg-color);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">Switch to Dark Mode</button>
+
+    <div class="container">
+        <h1>RED TEAMING FROM DOWN UNDER</h1>
+        <h2>Wayne Ronaldson - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+
+        <h3>Introduction</h3>
+        <p>
+            Introduced by Chris Hadnagy, Wayne Ronaldson is noted as the **very first contestant** in the Social Engineering Capture The Flag (SECTF) 10 years prior. Chris distinguishes "real red teaming" (like Wayne's) from standard penetration testing, defining it as long-term (e.g., 90-day) engagements that target the entire business, including supply chains.
+        </p>
+
+        <h3>What is Red Teaming?</h3>
+        <p>
+            Wayne immediately clarifies: <strong>Red Teaming is NOT Pen Testing.</strong>
+        </p>
+        <ul>
+            <li>Penetration testing is just one small part of a red team engagement.</li>
+            <li>Red Teaming is a <strong>holistic view</strong> of the entire company.</li>
+            <li>It requires understanding the business, its competitors, its supply chain, its ethics, and its global operational differences (e.g., an office in the US vs. Australia).</li>
+            <li>The term "Red Teaming" is so overused and abused that Wayne now prefers the term <strong>"Adversary Simulation."</strong></li>
+        </ul>
+
+        <h3>The Ideal Red Team Composition</h3>
+        <p>
+            A successful red team is built on diverse perspectives.
+        </p>
+        <ul>
+            <li><strong>Different Life Experiences:</strong> You cannot have a team of people with the same background. They will all look at the target in the same way.</li>
+            <li><strong>Dynamic Roles:</strong> Every member must be able to:
+                <ul>
+                    <li>Work solo</li>
+                    <li>Work in a team</li>
+                    <li>Be a leader</li>
+                    <li><strong>Be led (no ego)</strong></li>
+                </ul>
+            </li>
+            <li><strong>Diverse Skills:</strong> A team needs more than just hackers. Wayne has used:
+                <ul>
+                    <li><strong>Psychologists:</strong> "Who is the best person that knows people? A psychologist. That's their job." They help craft phishing emails and profile targets.</li>
+                    <li><strong>Doctors:</strong> They are not just for emergencies; they provide a completely different view of people and business processes.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Engagement: Worldwide Defense Contractor (3.5 Months)</h3>
+        <p>
+            This talk covers one part of a 3.5-month engagement.
+        </p>
+        <ul>
+            <li><strong>Client:</strong> Worldwide Defense Contractor.</li>
+            <li><strong>Goal:</strong> Simulate a real-world, global attack on the business as a whole.</li>
+            <li><strong>Scope:</strong> "Whatever the adversary" (Rules of Life), with the exception of murder and kidnapping.</li>
+            <li><strong>Target Focus:</strong> Executives, who are time-poor and have access to high-value business intelligence (future plans, M&A) and the supply chain.</li>
+        </ul>
+
+        <h3>Case Study 1: The Supply Chain Attack</h3>
+        <p>
+            The client was confident their third-party supply chain vendor, who managed their external firewalls, was secure.
+        </p>
+        <ol>
+            <li>Wayne called the vendor's 24/7 support line at 12:30 AM.</li>
+            <li><strong>Pretext:</strong> "I'm from [client company], I need to change a firewall rule. What's the process?"</li>
+            <li><strong>The Hook:</strong> The vendor rep said, "I need an email from you and an email from your boss."</li>
+            <li>Wayne immediately registered a **typosquatted domain** (very similar to the client's).</li>
+            <li>He sent one email from his fake employee account and another from his fake "boss" account, CC'ing each other.</li>
+            <li><strong>Result:</strong> 20 minutes later, he had a ticket number. At 2:00 AM, he had **RDP (port 3389) opened in and out** of a major defense contractor, giving him full access to their servers from the internet.</li>
+        </ol>
+
+        <h3>Case Study 2: The Multi-Stage Executive Breach</h3>
+
+        <h4>Phase 1: Digital Access (The 2FA Bypass)</h4>
+        <ul>
+            <li><strong>The Target:</strong> The company's single internet-facing portal: a **Citrix login with 2-Factor Authentication (2FA)**.</li>
+            <li><strong>The Attack:</strong> A team member built a tool to intercept and **bypass the 2FA**.</li>
+            <li>A phishing email ("critical patches to Intel processors") was sent to just three executives. One clicked.</li>
+            <li><strong>Key Finding:</strong> The 2FA bypass was so effective that it **wrote 0 logs to their 25-person SOC**.</li>
+        </ul>
+
+        <h4>Phase 2: Business Intelligence (The Calendar)</h4>
+        <ul>
+            <li>Once inside, Wayne goes to two places:
+                <ol>
+                    <li>The <strong>"Welcome Pack"</strong>: Found by scrolling to the *bottom* of an inbox. It contains portals, links, and sometimes even credentials.</li>
+                    <li><strong>The Calendar</strong>: This is the most important.</li>
+                </ol>
+            </li>
+            <li><strong>The Find:</strong> A calendar entry for a 12-executive, 2-day off-site meeting to discuss the company's 10-year plan.</li>
+            <li><strong>The SE/Physical Flaw:</strong> The execs held the meeting at a restaurant (with wine and beer) because the "food tastes like crap" at their secure facility, breaking all corporate policies.</li>
+        </ul>
+
+        <h4>Phase 3: Physical Recon & Social Engineering</h4>
+        <ol>
+            <li>Wayne knew all 12 executives' faces from their Outlook profile pictures.</li>
+            <li>He called the restaurant. <strong>Pretext 1:</strong> "I'm looking to book a 12-person room. Can I come see it?"</li>
+            <li><strong>Response:</strong> "That room is booked for a private, confidential meeting on those dates."</li>
+            <li><strong>Pretext 2:</strong> "No problem, I'm in town anyway. Can I just come by and have lunch, and poke my head in the room while they're at lunch just to take a photo for my boss?"</li>
+            <li>He arrived, waited for the execs to go downstairs, and a staff member escorted him up to the room.</li>
+            <li><strong>Pretext 3 (Re-entry):</strong> He pretended to take a selfie by accident. He ran back to the front desk, "So sorry, I took a photo of myself, my boss will kill me. Can I just run up and be real quick?"</li>
+            <li>The staff member let him go up **alone**.</li>
+        </ol>
+        
+        <h4>Phase 4: The "Jackpot" (Unsupervised Access)</h4>
+        <p>
+            In the room, Wayne found:
+        </p>
+        <ul>
+            <li>12 executive laptops, all open and <strong>unlocked</strong>.</li>
+            <li>The main presentation laptop, also <strong>unlocked</strong>.</li>
+            <li>Handwritten notes from the 10-year planning meeting all over the desk.</li>
+            <li>Multiple USB sticks.</li>
+        </ul>
+        <p>
+            In 15-20 minutes, he <strong>"owned all 12" laptops</strong>, took photos of all the notes, copied all the USBs, and planted implants on them.
+        </p>
+
+        <h4>Phase 5: The USB Drop</h4>
+        <ul>
+            <li>The execs had 4-hour parking and had to come down to move their cars.</li>
+            <li>Wayne watched one exec re-park his car and dropped a malicious USB stick right by the driver's side door.</li>
+            <li><strong>Result:</strong> The executive picked it up and plugged it in. "It's really silly that this still works."</li>
+        </ul>
+
+        <h3>Demo: Overwatch Offensive</h3>
+        <p>
+            Wayne demoed his custom tool, "Overwatch Offensive."
+        </p>
+        <ul>
+            <li>It is <strong>NOT</strong> a replacement for tools like Cobalt Strike.</li>
+            <li><strong>Purpose:</strong> It is used for special, high-value targets to gather **long-term business intelligence**.</li>
+            <li>It does not move laterally.</li>
+            <li>It uses extremely long callback times (<strong>48-72 hours or more</strong>) to evade detection.</li>
+            <li>The demo showed it can take screenshots and, most notably, <strong>play audio recordings</strong> captured from the target's microphone.</li>
+        </ul>
+
+        <h3>Rules of Engagement (from Q&A)</h3>
+        <ul>
+            <li><strong>Client Contact:</strong> Wayne is in **100% constant, live contact** with a trusted agent inside the organization, telling them exactly what is happening as it happens.</li>
+            <li><strong>Police:</strong> If approached by law enforcement (not a security guard), he will try his pretext *once*. If they question him a second time, he **"lets the cat out of the bag" immediately.**</li>
+            <li><strong>Priority #1 is safety:</strong> Safety of his team, himself, and the client.</li>
+        </ul>
+    </div>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Theme Logic ---
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            setCookie('theme', newTheme, 365); // Store preference for 1 year
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Add click listener to the button
+            themeToggleButton.addEventListener('click', toggleTheme);
+
+            // 2. Apply saved theme from cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Optional: Check OS preference if no cookie
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light'); // Default
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
