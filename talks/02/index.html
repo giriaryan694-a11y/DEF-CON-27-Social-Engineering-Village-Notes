@@ -118,6 +118,17 @@
             background: var(--highlight);
             transform: translateY(-2px);
         }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
         
         .talk-info {
             background-color: var(--secondary);
@@ -327,8 +338,9 @@
     
     <div class="container">
         <div class="nav-buttons">
-            <a href="../" class="nav-btn">← Back to Home</a>
-            <a href="../01/" class="nav-btn">Previous Talk</a>
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../01" class="nav-btn">← Previous Talk</a>
+            <a href="../03" class="nav-btn disabled">Next Talk →</a>
         </div>
 
         <div class="talk-info">
@@ -649,6 +661,12 @@
             <div class="offensive-point">
                 <strong>Red Team Evolution:</strong> True red teaming involves understanding business operations, psychology, physical security, and supply chains - not just technical penetration testing.
             </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../01" class="nav-btn">← Previous Talk</a>
+            <a href="../03" class="nav-btn disabled">Next Talk →</a>
         </div>
     </div>
     
