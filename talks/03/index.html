@@ -206,4 +206,96 @@
             <li><strong>Example:</strong> A client's department had a "King Fisher" award (a plush Nemo doll) for the first person to report the phish. 1,800 adults fought over this doll, and it got everyone talking about security.</li>
         </ul>
 
-        <h4>Q: Sales engineering feels disingenuous. How to handle "l
+        <h4>Q: Sales engineering feels disingenuous. How to handle "lopsided" friendships?</h4>
+        <ul>
+            <li><strong>Robin's Answer:</strong> You're doing it right. The relationship feels lopsided because you are an **introvert** and you recharge your batteries by being alone, not with them. That's okay.</li>
+            <li><strong>Chris's Answer:</strong> Reframe your thinking. If you truly believe in your product, you are *helping* them, not "selling" them.</li>
+        </ul>
+
+        <h4>Q: How do you handle red team burnout/fatigue from social engineering?</h4>
+        <ul>
+            <li><strong>Chris's Answer:</strong> It's a huge issue.
+                <ol>
+                    <li>You **cannot** have someone do vishing 40 hours a week. It's too mentally draining.</li>
+                    <li>**Empathy is the cause:** A great social engineer *must* have empathy, and that's what gets drained. If you *don't* feel bad after a con, "you're probably not a very empathetic person."</li>
+                    <li>Create a non-competitive, supportive team culture (memes, sharing successes) to recharge that empathy.</li>
+                </ol>
+            </li>
+            <li><strong>Robin's Answer:</strong> You must constantly remind the team of the **greater, positive purpose** of their work. This resolves the cognitive dissonance that causes fatigue.</li>
+        </ul>
+
+        <h3>Conclusion & Promotions</h3>
+        <ul>
+            <li><strong>Perry Carpenter:</strong> Book "Transformational Security Awareness" and @PerryCarpenter on Twitter.</li>
+            <li><strong>Robin Dreeke:</strong> peopleformula.com and @RobinDreeke on LinkedIn/Twitter.</li>
+            <li><strong>Chris Hadnagy:</strong> Promotes the **SE Village Orlando conference** (Feb 2020), with speakers including Ian Rowland, Joe Navarro, R. Paul Wilson, and more.</li>
+        </ul>
+    </div>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Theme Logic ---
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            setCookie('theme', newTheme, 365); // Store preference for 1 year
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Add click listener to the button
+            themeToggleButton.addEventListener('click', toggleTheme);
+
+            // 2. Apply saved theme from cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Optional: Check OS preference if no cookie
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light'); // Default
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
