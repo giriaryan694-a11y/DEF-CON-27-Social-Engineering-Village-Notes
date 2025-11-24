@@ -1,6 +1,6 @@
 # DEF CON 27 – Social Engineering Village Notes
 
-This project is a curated, structured, and easy-to-read collection of notes from the DEF CON 27 Social Engineering Village (SEV). It compiles insights from multiple talks on social engineering, psychology, OSINT, red teaming, human behavior, and defensive strategies.
+This repo is a curated, structured, and easy-to-read collection of notes from the DEF CON 27 Social Engineering Village (SEV). It compiles insights from multiple talks on social engineering, psychology, OSINT, red teaming, human behavior, and defensive strategies.
 
 **Live web URL:**
 [https://giriaryan694-a11y.github.io/DEF-CON-27-Social-Engineering-Village-Notes/](https://giriaryan694-a11y.github.io/DEF-CON-27-Social-Engineering-Village-Notes/)
