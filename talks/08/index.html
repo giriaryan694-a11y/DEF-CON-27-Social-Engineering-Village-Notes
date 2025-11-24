@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .journey-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .timeline-item {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FFC107;
+        }
+
+        .timeline-item h4 {
+            color: #FFC107;
+            margin-bottom: 10px;
+        }
+
+        .superpower-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .superpower-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .challenge-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #f44336;
+        }
+
+        .resource-list {
+            background: rgba(15, 52, 96, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .superpower-grid, .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Perry Carpenter - The Aspies Guide to Social Engineering</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../07" class="nav-btn">← Previous Talk</a>
+            <a href="../09" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Perry Carpenter, Chief Evangelist & Strategy Officer at KnowBe4</p>
+            <p><strong>Background:</strong> Autism spectrum diagnosis, degrees in religious studies and philosophy, former pastor, security awareness expert</p>
+            <p><strong>Key Focus:</strong> Leveraging neurodiversity as a superpower in social engineering and security</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Personal Journey: From Alien to Expert</h2>
+            <p>Perry Carpenter shares his deeply personal journey of discovering his place on the autism spectrum and how he transformed perceived weaknesses into professional strengths.</p>
+            
+            <div class="key-point">
+                <strong>Core Insight:</strong> "I've always felt like an alien looking at the world and the people around them, saying 'what makes these people tick? Why do they do the things they do?'"
+            </div>
+            
+            <h3>Diagnosis and Realization:</h3>
+            <ul>
+                <li>Diagnosed with Asperger's syndrome about 4 years ago after reading "The Journal of Best Practices"</li>
+                <li>Childhood friends responded with "no duh, we've known that for years"</li>
+                <li>High school comments: "Perry has the emotional variability of a robot"</li>
+                <li>Early characteristics: monotone speech, rigid opinions, social awkwardness</li>
+            </ul>
+
+            <div class="quote-box">
+                "About four years ago I realized... that I probably fall somewhere on the autism spectrum. I went in and got the diagnosis and then I started to share that with childhood friends and they're like 'well no duh we've known that for years' which made me feel great."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Turning Point: Why Share This Story?</h2>
+            
+            <div class="key-point">
+                <strong>Motivation:</strong> After mentioning his diagnosis during a presentation, parents of autistic children and young adults on the spectrum approached him with gratitude, showing him the impact of sharing his story.
+            </div>
+
+            <h3>The Revelation Moment:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Unexpected Impact</h4>
+                    <p>Parents saw hope for their children's future in society and careers</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Young Adult Inspiration</h4>
+                    <p>People in their early 20s saw possibilities for personal growth and career success</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Cultural Shift</h4>
+                    <p>Part of growing neurodiversity movement in organizations like GCHQ and tech companies</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Professional Context:</strong> "I can talk about security all day long because I can dissociate. Maybe it makes sense every now and then to mention this aspect of my life."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Asperger's Characteristics: Challenges and Superpowers</h2>
+            
+            <div class="superpower-grid">
+                <div class="superpower-card">
+                    <h4>Restricted Interests</h4>
+                    <p>Tunnel vision and deep focus on specific subjects</p>
+                </div>
+                
+                <div class="superpower-card">
+                    <h4>Subject Matter Expertise</h4>
+                    <p>Ability to become world-class expert in focused areas</p>
+                </div>
+                
+                <div class="superpower-card">
+                    <h4>Pattern Recognition</h4>
+                    <p>Seeing connections others miss across different domains</p>
+                </div>
+            </div>
+
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <h4>Emotional Expression</h4>
+                    <p>Difficulty showing, talking about, and reflecting emotion</p>
+                </div>
+                
+                <div class="challenge-card">
+                    <h4>Social Connection</h4>
+                    <p>Struggles with emotional reciprocity and relationship building</p>
+                </div>
+                
+                <div class="challenge-card">
+                    <h4>Home Life Impact</h4>
+                    <p>Difficulty being emotionally present with family</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Career Insight:</strong> "Luckily for me I was able to shift a lot of those restricted interests into the security world. If you find yourself in that kind of spectrum, you'll figure out how to use these things as almost a superpower and find competitive advantage."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Professional Evolution Journey</h2>
+            
+            <div class="journey-timeline">
+                <div class="timeline-item">
+                    <h4>Early Career: Coding at Walmart</h4>
+                    <ul>
+                        <li>Wrote email system used in all Walmart stores and clubs for 5 years</li>
+                        <li>"The type of coder that would unplug all the lights in the office"</li>
+                        <li>Would lose 10 hours coding feeling like 5 minutes</li>
+                        <li>Promoted to team leader but struggled with people management</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Transformation: Dale Carnegie Training</h4>
+                    <ul>
+                        <li>12-week immersive speaking and leadership training</li>
+                        <li>Voted "most changed person" by the end</li>
+                        <li>Consciously threw himself into personal development</li>
+                        <li>Learned to project emotion and connection</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Dual Roles: Gartner & Pastoral Work</h4>
+                    <ul>
+                        <li>Simultaneously worked at Gartner and served as church pastor</li>
+                        <li>Pastoral work: 40-minute talks weekly, counseling through life crises</li>
+                        <li>Gartner: 25 hours weekly phone consulting, presenting</li>
+                        <li>Learned to "walk through the wreckage of people's lives"</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Current Role: Chief Evangelist at KnowBe4</h4>
+                    <ul>
+                        <li>C-level executive presenting worldwide</li>
+                        <li>Works with Kevin Mitnick and other security leaders</li>
+                        <li>Consistently top-rated speaker at Gartner (4.5/5+ ratings)</li>
+                        <li>Author of security awareness books</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Interests as Foundation: The Connection Web</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Magic & Misdirection</h4>
+                    <p>College card tricks evolved into understanding deception principles applicable to security</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Street Hypnosis</h4>
+                    <p>Training in Las Vegas - understanding belief casting and reinforcement cycles</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Pickpocketing</h4>
+                    <p>Physical deception techniques with digital security parallels</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Cold Reading & Mentalism</h4>
+                    <p>Simulated mind-reading using observation, NLP, and psychological principles</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Integration Philosophy:</strong> "I've been able to grow that and weave some of that into security because when we're talking about social engineering, deception and misdirection are key."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Practical Techniques for Social Connection</h2>
+            
+            <h3>Emotional Intelligence Development:</h3>
+            
+            <div class="technique-card">
+                <h4>Alexithymia Management</h4>
+                <p>10% of people experience "writer's block" for emotions. Use emotion wheels and lists to identify and articulate nuanced feelings beyond basic "mad/sad/happy."</p>
+            </div>
+
+            <div class="technique-card">
+                <h4>Theory of Mind Practice</h4>
+                <p>Consciously recognize others have different perspectives. Essential for both social connection and social engineering targeting.</p>
+            </div>
+
+            <div class="technique-card">
+                <h4>Authentic Emotion Simulation</h4>
+                <p>Like method acting - recall personal experiences with similar emotions rather than fake emulation. Neil Gaiman principle: "All fiction has to be as honest as you can make it."</p>
+            </div>
+
+            <h3>Connection-Building Tactics:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Multiple Context Meetings</h4>
+                    <p>Meet someone multiple times in different locations the same day to create multiple memories and sense of longer acquaintance</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Reciprocity Leverage</h4>
+                    <p>Understand oxytocin release from giving/receiving to build investment in relationships</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Value Reflection</h4>
+                    <p>Identify what others appreciate and reflect that back to build connection</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Communication Mastery Strategies</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Message Consolidation</h4>
+                    <p>Shift from fact-heavy presentations to core message of 3 key points with emotional reinforcement</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Intentional Modeling</h4>
+                    <p>Study effective speakers (TED talks, pastors) and mimic techniques that feel authentic</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Emotion-Logic Balance</h4>
+                    <p>People decide with emotion then justify with logic. Infuse messages with emotional elements even if not naturally felt.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Truth as Seasoning</h4>
+                    <p>Use genuine elements to make messages credible: "Using truth as a condiment to make otherwise unconvincing narrative absolutely credible."</p>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                "I learned that people make decisions based on emotion and then backed them up with logic later on. I had to figure out how do I infuse whatever message I'm giving with emotion even if I don't necessarily feel it connected to that message."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Career Development Framework</h2>
+            
+            <h3>Escape Room Approach to Career:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Branching Connections</h4>
+                    <p>As you master one skill, identify 3 new avenues it unlocks when combined with existing knowledge</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Interest Integration</h4>
+                    <p>Weave together psychology, magic, misdirection, and technology into unique professional value</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Progressive Masking</h4>
+                    <p>Develop professional personas that feel authentic while meeting situational requirements</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Relationship Insight:</strong> "If you're married and your spouse is in a helping profession like a teacher, nurse, or speech pathologist, it's probably likely you're on the spectrum. We tend to attract those types of people because they want to understand and be helpful."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Ethical Framework and Professional Philosophy</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Leave People Better</h4>
+                    <p>Ethical duty to leave every situation better than before entered. Understand what "better" means in each context.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Social Responsibility</h4>
+                    <p>When engaging with others, ensure they come away rewarded for the interaction</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Authentic Connection</h4>
+                    <p>Use personal emotional memories to create genuine rather than fake emotional responses</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Professional Mission:</strong> "I see myself as actually having done some pretty good for the community. I work with great guys like Eric and others, and I've been able to use my unique perspective to contribute meaningfully to security awareness."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Neurodiverse Individuals</h2>
+            
+            <h3>Essential Success Strategies:</h3>
+            <ol>
+                <li>Transform restricted interests into professional superpowers and competitive advantages</li>
+                <li>Use intentional immersion and modeling to develop social and communication skills</li>
+                <li>Develop ethical frameworks for emotional connection using authentic personal references</li>
+                <li>Approach career development like an escape room - each skill unlocks new combinations</li>
+                <li>Leverage pattern recognition abilities to see connections across different domains</li>
+                <li>Understand that deep emotion exists even if expression is challenging - find ways to articulate it</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Wisdom:</strong> "You want to approach life in your career like an escape room. As you learn one thing, what are maybe three avenues that that unlocks if you can combine it with all the other things that you know and are fantastic at?"
+            </div>
+
+            <div class="resource-list">
+                <h4>Recommended Resources:</h4>
+                <ul>
+                    <li>"The Journal of Best Practices" - Key book in Perry's diagnosis journey</li>
+                    <li>Neil Gaiman's writing on authenticity in communication</li>
+                    <li>Emotion wheels and detailed emotion lists for alexithymia management</li>
+                    <li>Chris Hadnagy's social engineering books</li>
+                    <li>Dale Carnegie training for communication skills development</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../07" class="nav-btn">← Previous Talk</a>
+            <a href="../09" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Perry Carpenter Neurodiversity Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
