@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27: Marcus Liotta</title>
+    <style>
+        /* * 1. CSS Variables for Theming 
+         */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-color: #d40000; /* DEF CON Red */
+            --header-sub-color: #555;
+            --code-bg-color: #eee;
+            --shadow-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme {
+            --bg-color: #2b2b2b;
+            --text-color: #f1f1f1;
+            --border-color: #555;
+            --header-color: #ff4141; /* Lighter Red for dark bg */
+            --header-sub-color: #ccc;
+            --code-bg-color: #444;
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        /* * 2. General Body Styles (using variables)
+         */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        /* * 3. Theme Toggle Button Styles
+         */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: var(--code-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* * 4. Content Styles (using variables)
+         */
+        h1 {
+            color: var(--header-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--header-sub-color);
+            font-style: italic;
+            font-weight: normal;
+            font-size: 1.2em;
+            margin-top: -10px;
+        }
+        h3 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code, pre {
+            background-color: var(--code-bg-color);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">Switch to Dark Mode</button>
+
+    <div class="container">
+        <h1>Leveraging the Insider Threat (And How to Be Awesome)</h1>
+        <h2>Marcus Liotta - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+
+        <h3>Introduction</h3>
+        <p>
+            The talk begins with a clarification: you can't teach everyone "to be awesome," but you can **"teach people how to believe you are awesome."** This builds confidence and motivational value.
+        </p>
+
+        <h3>The Modern Threat Landscape (Statistics)</h3>
+        <p>
+            Marcus outlines a massive increase in threats from 2016-2018, citing Symantec and Verizon reports.
+        </p>
+        <ul>
+            <li><strong>55% of all email</strong> is still considered spam (phishing, ads, junk).</li>
+            <li><strong>600% increase</strong> in attacks on IoT devices.</li>
+            <li><strong>1000% increase</strong> in PowerShell-based malware attacks.</li>
+            <li><strong>1 in 10 emails</strong> scanned at corporate gateways is malicious.</li>
+            <li><strong>7,700 organizations</strong> are hit by Business Email Compromise (BEC) scams *every month*.</li>
+            <li><strong>71% of attacks</strong> are spearfishing (targeted, information-backed attacks).</li>
+        </ul>
+
+        <h3>On-Location & Future Threats</h3>
+        <ul>
+            <li><strong>Wi-Fi Replication:</strong> Creating fake Wi-Fi gateways to steal credentials (rogue APs).</li>
+            <li><strong>Mobile Hijacking:</strong> Malicious apps (like a fake "flappy bird") that steal banking info or perform cryptojacking.</li>
+            <li><strong>Drones:</strong> Using drones to create mobile, malicious Wi-Fi portals.</li>
+            <li><strong>Real-World Example:</strong> In June (2019), **NASA was hacked** via an unauthorized Raspberry Pi (an IoT device) connected to their network. The attacker stole moon-landing data.</li>
+        </ul>
+
+        <h3>The One Common Factor: People</h3>
+        <p>
+            The single common factor behind all these threats is **people**. People are the intelligence behind every attack.
+        </p>
+
+        <h3>Psychological Manipulation Tactics (Effectiveness)</h3>
+        <p>
+            An analysis of which social engineering tactics actually work.
+        </p>
+        <ul>
+            <li><strong>Ineffective: Threats & Abuse.</strong> Threatening someone ("you're gonna lose your job") makes them angry and uncooperative.</li>
+            <li><strong>Ineffective: Reason-Based Tactics.</strong> People are fundamentally "lazy." If you give them a reason that requires them to do extra work, they "don't care" and will "buzz you off."</li>
+            <li><strong>Effective: Charm Tactics.</strong> Joking and being pleasant makes people enjoy your company and want to help.</li>
+            <li><strong>Effective: Mutually Beneficial.</strong> This is why "Prince" scams (greed) worked so well. "Do a small favor, get $10,000."</li>
+        </ul>
+
+        <h3>Attack & Manipulation Techniques</h3>
+        <ul>
+            <li><strong>The "One Shot" Rule:</strong> You have one shot to build trust. If you explore too many tactics and fail, that person will no longer trust you.</li>
+            <li><strong>Lying:</strong> Marcus argues *against* lying.
+                <ul>
+                    <li>It's not the most effective option.</li>
+                    <li>It's **"very difficult to maintain a lie"** over time.</li>
+                    <li>It breaks relationships and long-term trust (bad for an attacker wanting persistent access).</li>
+                </ul>
+            </li>
+            <li><strong>Lying by Omission:</strong> Not telling the whole truth (e.g., the dog not telling you it ate the trash).</li>
+            <li><strong>Rationalization:</strong> Playing dumb to justify an action. ("Oh, I didn't know I needed an ID card, I'm just cleaning up...").</li>
+            <li><strong>Guilt Trip:</strong> Making a failure your fault. ("I couldn't do my job because the report *you* gave me got thrown out...").</li>
+            <li><strong>Servant Role:</strong> Using a position of (often fake) authority. ("Dispatch said we've got to take you in...").</li>
+            <li><strong>Bandwagon Effect:</strong> "Everybody does it." This is a major risk in corporate culture ("Jake did the same thing," "IT needs your password, I gave him mine...").</li>
+        </ul>
+
+        <h3>Prevention: Leveraging the (Good) Insider</h3>
+        <p>
+            This section covers the *defensive* side: how to leverage your employees (the insiders) to build a strong defense.
+        </p>
+        <ul>
+            <li><strong>Lock your computer.</strong> Enforce screen lock timeouts.</li>
+            <li><strong>Train users to be suspicious.</strong> Assume callers and emails *could* be fraudulent.</li>
+            <li>Use **external email flagging** on your mail gateway.</li>
+            <li>Conduct **quarterly training**.</li>
+            <li>Train users to **verify a caller's identity** *before* revealing sensitive info.</li>
+            <li>Define **proper, clear reporting procedures** so users know who to contact.</li>
+        </ul>
+
+        <h3>How to Be Awesome: Leveraging Your *Own* Influence</h3>
+        <p>
+            This is the *offensive* (personal influence) side of the talk: how to make people *believe* you are awesome.
+        </p>
+        <ul>
+            <li><strong>Be Bold:</strong> Be the person in the room who "raises their hand" and has the answer.</li>
+            <li><strong>Mirroring:</strong> Mirror behavior and emotions. People like people who are like them.</li>
+            <li><strong>Tactic: Repeated Wordplay.</strong>
+                <ul>
+                    <li>As an IT guy, Marcus would fix a problem and joke, "No problem, I'm just awesome like that."</li>
+                    <li>After 27 days, "dozens of people" in the company started saying it *for him*: "Oh, Marcus? Yeah, he's just awesome like that."</li>
+                </ul>
+            </li>
+            <li><strong>Tactic: The Restaurant Review (How to get free sushi).</strong>
+                <ol>
+                    <li>Go to a restaurant and socialize with your server. Get their name.</li>
+                    <li>Leave a 5-star review (e.g., on Google) and **use their name** in the review.</li>
+                    <li>Show the server the review. Show their *manager* the review.</li>
+                    <li>When you come back, they will remember you. After a few times, "you're going to start getting free stuff."</li>
+                </ol>
+            </li>
+            <li><strong>Key Philosophy: Users are NOT the Enemy.</strong> If you work in IT or programming, do not "crush their rebellion." Help them.</li>
+            <li><strong>Teamwork:</strong> Rely on your friends and team. Everyone has an attribute you do not have.</li>
+        </ul>
+
+    </div>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Theme Logic ---
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-Teme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            setCookie('theme', newTheme, 365); // Store preference for 1 year
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Add click listener to the button
+            themeToggleButton.addEventListener('click', toggleTheme);
+
+            // 2. Apply saved theme from cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Optional: Check OS preference if no cookie
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light'); // Default
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
