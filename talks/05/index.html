@@ -3,262 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEF CON 27: Shane McCombs</title>
+    <title>DEF CON 27 Social Engineering Village Notes</title>
     <style>
-        /* * 1. CSS Variables for Theming 
-         */
         :root {
-            --bg-color: #f9f9f9;
-            --text-color: #333;
-            --border-color: #ddd;
-            --header-color: #d40000; /* DEF CON Red */
-            --header-sub-color: #555;
-            --code-bg-color: #eee;
-            --shadow-color: rgba(0,0,0,0.05);
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
         }
 
-        body.dark-theme {
-            --bg-color: #2b2b2b;
-            --text-color: #f1f1f1;
-            --border-color: #555;
-            --header-color: #ff4141; /* Lighter Red for dark bg */
-            --header-sub-color: #ccc;
-            --code-bg-color: #444;
-            --shadow-color: rgba(0,0,0,0.2);
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
         }
-
-        /* * 2. General Body Styles (using variables)
-         */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
             line-height: 1.6;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 25px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            transition: background-color 0.3s, color 0.3s;
         }
-
+        
         .container {
-            padding: 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        /* * 3. Theme Toggle Button Styles
-         */
-        #theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 12px;
-            font-size: 0.9em;
-            font-weight: bold;
-            background-color: var(--code-bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
         }
-
-        #theme-toggle:hover {
-            opacity: 0.8;
-        }
-
-        /* * 4. Content Styles (using variables)
-         */
+        
         h1 {
-            color: var(--header-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
         }
-        h2 {
-            color: var(--header-sub-color);
-            font-style: italic;
-            font-weight: normal;
-            font-size: 1.2em;
-            margin-top: -10px;
-        }
-        h3 {
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-top: 40px;
-        }
-        h4 {
-            color: var(--text-color);
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
             margin-bottom: 5px;
         }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
         p {
             margin-bottom: 15px;
         }
-        ul {
+        
+        ul, ol {
             margin-left: 20px;
             margin-bottom: 15px;
         }
+        
         li {
             margin-bottom: 8px;
         }
-        code, pre {
-            background-color: var(--code-bg-color);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: "Courier New", Courier, monospace;
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .case-study {
+            background-color: rgba(15, 52, 96, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: var(--text);
+            opacity: 0.8;
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border-top: 3px solid var(--highlight);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .framework-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .framework-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .framework-card h4 {
+            color: #2980b9;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-
-    <button id="theme-toggle">Switch to Dark Mode</button>
-
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Shane McCombs - Why Vigilantism Doesn't Work</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
     <div class="container">
-        <h1>Why Vigilantism Doesn't Work</h1>
-        <h2>Shane McCombs - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../04" class="nav-btn">← Previous Talk</a>
+            <a href="../06" class="nav-btn disabled">Next Talk →</a>
+        </div>
 
-        <h3>Introduction: Stirring Thought, Not Debate</h3>
-        <p>
-            Shane McCombs clarifies his goal is not to start a debate about whether vigilantism is good or bad. The goal is to "get our thinking stirred up" and move people to effective action.
-        </p>
-        <ul>
-            <li>Vigilantism ("law enforcement undertaken without legal authority") appeals to our core sense of justice.</li>
-            <li>When we see an injustice, our "internal sense of justice is offended." This is the same principle as reciprocity, and it's why heroes like Batman are so successful.</li>
-        </ul>
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Shane McCombs, Innocent Lives Foundation (ILF)</p>
+            <p><strong>Background:</strong> Focused on combating child predation through ethical, systematic approaches</p>
+            <p><strong>Key Focus:</strong> Why vigilante predator hunting fails and how to build effective, sustainable alternatives</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Psychology of Vigilantism</h2>
+            <p>Shane McCombs begins by exploring why vigilantism resonates so deeply with human psychology and why it's such an emotionally charged topic.</p>
+            
+            <div class="key-point">
+                <strong>Core Insight:</strong> "Vigilantism hits us at our core as human beings. When something's not handled right, our internal sense of justice is offended."
+            </div>
+            
+            <h3>Why Vigilantism Appeals to Us:</h3>
+            <ul>
+                <li><strong>Reciprocity Principle:</strong> The innate need for balance in social exchanges</li>
+                <li><strong>Cultural Reinforcement:</strong> Comic book heroes like Batman normalize vigilante justice</li>
+                <li><strong>Entertainment Value:</strong> Stories of justice outside the system are compelling narratives</li>
+                <li><strong>Shadow Vigilantism:</strong> Everyday behaviors influenced by vigilante thinking</li>
+            </ul>
 
-        <h3>The Core Problem: Why Vigilantes Exist</h3>
-        <ul>
-            <li><strong>The Statistic:</strong> A "realistic" and "unacceptable" statistic is that **1 in 10 children** will experience sexual abuse before their 18th birthday. He notes this is based on *reported* numbers, so the real number is "probably much higher."</li>
-            <li><strong>The Systemic Failure:</strong> When families go to the system for help, they find good people who are **"understaffed, underfunded, overworked"** and can't keep up.</li>
-            <li>This "gap" is what vigilante predator hunter groups are attempting to fill.</li>
-        </ul>
+            <div class="case-study">
+                <h4>1981 Coffee County Shooting Case</h4>
+                <p>46 people participated in shooting up a truck, yet to this day (40+ years later), the FBI cannot get anyone to talk. This case demonstrates how vigilante justice can create lasting bonds of silence.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>The Child Predation Crisis</h2>
+            
+            <div class="stat-card">
+                <div class="stat-number">1 in 10</div>
+                <p>Children will experience sexual abuse before their 18th birthday</p>
+            </div>
 
-        <h3>Predator Hunting 101 (The Common Vigilante Method)</h3>
-        <ol>
-            <li>Pretend to be a minor on social media.</li>
-            <li>Build a relationship with anyone who interacts (casting a "wide net").</li>
-            <li>If the relationship turns sexual, cultivate it.</li>
-            <li>Arrange an in-person meeting.</li>
-            <li>Record or livestream the confrontation, where the person is "confronted, named, shamed, humiliated."</li>
-        </ol>
+            <h3>Key Statistics & Realities:</h3>
+            <ul>
+                <li>Statistic based on reported cases - actual numbers are likely higher</li>
+                <li>Every person in the room has 10% chance of being affected</li>
+                <li>System is understaffed, underfunded, and overwhelmed</li>
+                <li>Creates vacuum that vigilante groups attempt to fill</li>
+            </ul>
 
-        <h3>The 8 Key Challenges of Vigilantism (Why It Doesn't Work)</h3>
-        <p>
-            This is the core of the argument. The vigilante method has fundamental, often counter-productive, flaws.
-        </p>
-        <ol>
-            <li><strong>Physical Safety:</strong> The confrontations are dangerous. More importantly, if the predator is shamed and *not* arrested, what might they do when they go home to a child they have access to?</li>
-            <li><strong>Failed Prosecutions (Capability):</strong> He played a clip of a lawyer stating that prosecutions **fail** because the hunters "went too far," and the court cannot prove the person would have committed the crime without the hunter's actions.</li>
-            <li><strong>Legality (Entrapment):** This is a huge legal debate that taints the cases.</li>
-            <li><strong>Police Conflicts:</strong> Law enforcement is now being told to "crack down on the vigilante hunter group." The Michigan Attorney General issued a "cease and desist" because they were **"jeopardizing police work."**</li>
-            <li><strong>Hunters Get Sued:</strong> Predators are now turning around and *suing* the hunter groups.</li>
-            <li><strong>Drains Resources:</strong> Law enforcement's already-strained resources are now split between catching the *real* criminals and managing the vigilantes.</li>
-            <li><strong>The Wrong Focus:</strong> Vigilantism focuses almost exclusively on the "stranger danger" threat. Statistics overwhelmingly show that most abuse comes from **family members and acquaintances**.</li>
-            <li><strong>Educating the Enemy:</strong> By "going full-on open kimono" and showing their methods on livestreams, they are **"teaching these guys how to avoid them"** (and law enforcement) in the future.</li>
-        </ol>
+            <div class="key-point">
+                <strong>Human Impact:</strong> "One in anything is too many. We should never ever be having this conversation because it should never be happening."
+            </div>
 
-        <h3>A Better Way: The Innocent Lives Foundation (ILF) Framework</h3>
-        <p>
-            Shane proposes a "different, non-vigilante framework" that is designed to specifically bypass the challenges listed above.
-        </p>
-        <ul>
-            <li><strong>Principle 1: Anonymity & No Confrontation:</strong> This is the *opposite* of the vigilante model. It eliminates the physical safety risk, removes the legal threat to the hunters, and stops them from "teaching the predators."</li>
-            <li><strong>Principle 2: Trained & Qualified Members:** Only approved team members can interact, minimizing the chance of "failure" (i.e., failed prosecutions).</li>
-            <li><strong>Principle 3: Target "Confirmed Predators":** Instead of casting a "wide net," they target those *already* "misbehaving... in public space" (breaking the law). This **"bypasses the questions of legality and entrapment."**</li>
-            <li><strong>Principle 4: Cultivate Law Enforcement (LE) Relationships:</strong> They actively partner with LE, submitting information through a "predefined and approved process." They become a force multiplier *for* the system, not an obstacle to it.</li>
-        </ul>
+            <div class="offensive-point">
+                <strong>Security Perspective:</strong> Understanding the scale of the problem helps security professionals recognize why well-meaning people turn to vigilante methods, and why systematic solutions are needed.
+            </div>
+        </div>
 
-        <h3>ILF Operations & Call to Action</h3>
-        <p>
-            The ILF ( https://www.innocentlivesfoundation.org ) is run as a non-profit business, not a vigilante group, with SOPs, a Board of Directors, and a **mandatory wellness program** because the work is so "hard" ("rolling in muck all day long").
-        </p>
-        <h4>How to Help</h4>
-        <ul>
-            <li><strong>Volunteer:</strong> The process is "ridiculously stringent" and requires intrusive background checks (criminal, financial), technical interviews, and wellness interviews.</li>
-            <li><strong>Donate:</strong> Via the website, swag, or the Squad Locker store.</li>
-            <li><strong>Use OPM (Other People's Money):**
-                <ul>
-                    <li>Set ILF as your charity on **`smile.amazon.com`**.</li>
-                    <li>Use workplace donation matching.</li>
-                    <li>Partner through Humble Bundle or as a Twitch streamer.</li>
-                </ul>
-            </li>
-            <li>Even small grassroots efforts (like a Super Bowl jar) have raised thousands.</li>
-        </ul>
+        <div class="section">
+            <h2>Vigilante Predator Hunting 101</h2>
+            
+            <div class="case-study">
+                <h4>Standard Vigilante Methodology:</h4>
+                <ol>
+                    <li><strong>Impersonation:</strong> Pretend to be a minor online</li>
+                    <li><strong>Wide Net Casting:</strong> Build relationships with anyone who interacts</li>
+                    <li><strong>Cultivation:</strong> Allow relationship to turn sexual in nature</li>
+                    <li><strong>Confrontation:</strong> Arrange in-person meeting that is recorded/live-streamed</li>
+                    <li><strong>Public Shaming:</strong> Name, shame, and humiliate the individual</li>
+                    <li><strong>Uncertain Outcome:</strong> Law enforcement involvement varies by group</li>
+                </ol>
+            </div>
 
-        <h3>Q&A Highlights</h3>
-        <ul>
-            <li><strong>Is it scalable?</strong> Yes. They are building SOPs to "stamp it out." They went from 9 cases submitted to LE last year to **63 cases** this year. "It's a little dent, but you got to start somewhere."</li>
-            <li><strong>Working with NCMEC?</strong> Not directly, but they have working relationships and are taking advice.</li>
-            <li><strong>Team Size:</strong> 26 people total (including 6 on the board and 11 in the "pit," or Predator Identification Team).</li>
-        </ul>
+            <div class="offensive-point">
+                <strong>Operational Analysis:</strong> This methodology creates numerous legal and safety issues while potentially educating predators on avoidance techniques.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Critical Challenges of Vigilantism</h2>
+            
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>Physical Safety Risks</h4>
+                    <p>Immediate danger during confrontations. Humiliated predators may return to harm actual children.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Legal Complications</h4>
+                    <p>Police often crack down on hunter groups instead of predators. Entrapment debates never end.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Prosecution Failures</h4>
+                    <p>Cases fail due to vigilante methods compromising evidence. "Guilt is no longer enough" in court.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Resource Drain</h4>
+                    <p>Law enforcement must manage both predators and vigilantes, stretching limited resources.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Focus Distortion</h4>
+                    <p>Overemphasis on stranger danger ignores that most abuse comes from family/acquaintances.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Predator Education</h4>
+                    <p>Public methods teach predators how to avoid detection from both vigilantes and law enforcement.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Legal Reality:</strong> "Prosecution has failed not because my client was innocent, but because the process was compromised by vigilante hunters who went too far."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The ILF Alternative Framework</h2>
+            
+            <h3>Core Principles for Effective Action:</h3>
+            
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>Anonymity & Avoidance</h4>
+                    <p>Remain anonymous and avoid confrontation to eliminate physical safety risks and protect children.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Confirmed Predators Only</h4>
+                    <p>Target individuals already breaking the law in public spaces, avoiding entrapment questions.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Law Enforcement Partnership</h4>
+                    <p>Cultivate relationships with law enforcement at all levels for effective case submission.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Professional Standards</h4>
+                    <p>Operate as a legitimate non-profit with SOPs, board oversight, and best practices.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Strategic Advantage:</strong> "If we can catch these guys by remaining primarily anonymous and avoiding confrontation, that means most of the physical safety stuff is done away with. The predator never has any idea he's being taken out, and the kid is in good shape."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Operational Structure & Success Metrics</h2>
+            
+            <h3>ILF Organizational Approach:</h3>
+            <ul>
+                <li><strong>Non-profit Business Model:</strong> Standard operating procedures and board governance</li>
+                <li><strong>In-house Technology:</strong> Custom tools for predator identification</li>
+                <li><strong>Wellness Program:</strong> Mandatory emotional health monitoring for volunteers</li>
+                <li><strong>Stringent Onboarding:</strong> Rigorous background checks and qualifications</li>
+            </ul>
+
+            <div class="stat-card">
+                <div class="stat-number">63 Cases</div>
+                <p>Submitted to law enforcement in current year (up from 9 cases previous year)</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">26 Members</div>
+                <p>Current team size including 6 board members and 11 predator identification specialists</p>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Sustainable Growth:</strong> The ILF model demonstrates how ethical, systematic approaches can scale effectively while maintaining operational security and legal compliance.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Getting Involved: Volunteer Requirements</h2>
+            
+            <div class="case-study">
+                <h4>ILF Volunteer Qualification Process:</h4>
+                <ol>
+                    <li><strong>Initial Requirements:</strong> Desire, time, talent, age 21+, wellness program commitment</li>
+                    <li><strong>Application:</strong> Contact form submission and fit assessment</li>
+                    <li><strong>Intrusive Background Check:</strong> Criminal, financial, medical access review</li>
+                    <li><strong>Law Enforcement Awareness:</strong> Willingness to be known to authorities</li>
+                    <li><strong>Technical Interview:</strong> Skills assessment for operational capabilities</li>
+                    <li><strong>Wellness Interview:</strong> Emotional bandwidth evaluation</li>
+                    <li><strong>Personality Fit:</strong> Organizational culture alignment</li>
+                </ol>
+            </div>
+
+            <div class="key-point">
+                <strong>Volunteer Reality:</strong> "The background check is so intrusive it's embarrassing. But kids are involved, so it's worth it."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Support Alternatives Beyond Volunteering</h2>
+            
+            <h3>Multiple Engagement Pathways:</h3>
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>Financial Support</h4>
+                    <p>One-time or ongoing donations through website or SquadLocker store</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Corporate Matching</h4>
+                    <p>Workplace donation matching programs and Amazon Smile</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Content Creation</h4>
+                    <p>Authors, game developers, Twitch streamers doing charity work</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h4>Network Engagement</h4>
+                    <p>Connections to celebrities, philanthropists, or community fundraising</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Grassroots Impact:</strong> "We had someone put out a jar at a Super Bowl game. These small efforts raised $4,000 completely unexpectedly. It doesn't have to be complicated."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Security Professionals</h2>
+            
+            <h3>Critical Lessons:</h3>
+            <ol>
+                <li>Vigilantism fails because it creates more problems than it solves</li>
+                <li>Systematic, ethical approaches yield sustainable results</li>
+                <li>Partnership with law enforcement is essential for effectiveness</li>
+                <li>Operational security protects both investigators and potential victims</li>
+                <li>Emotional wellness is crucial when working with traumatic content</li>
+                <li>Scalable solutions require professional standards and procedures</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Thought:</strong> "The question isn't whether vigilantism is right or wrong. The better question is: Is there a way to cut through the static, avoid all those off-ramps and challenges, and just get on with moving these predators off the street?"
+            </div>
+
+            <div class="offensive-point">
+                <strong>Security Methodology:</strong> The ILF framework provides a model for how security professionals can approach complex problems systematically, focusing on sustainable solutions rather than emotionally satisfying but ineffective quick fixes.
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../04" class="nav-btn">← Previous Talk</a>
+            <a href="../06" class="nav-btn disabled">Next Talk →</a>
+        </div>
     </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Shane McCombs Vigilantism Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
 
     <script>
-        // --- Cookie Helper Functions ---
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
-        }
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
 
+        // Function to get cookie value
         function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
-        // --- Theme Logic ---
-        const themeToggleButton = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                body.classList.add('dark-theme');
-                themeToggleButton.textContent = 'Switch to Light Mode';
-            } else {
-                body.classList.remove('dark-theme');
-                themeToggleButton.textContent = 'Switch to Dark Mode';
-            }
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
         }
 
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
         function toggleTheme() {
-            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            applyTheme(newTheme);
-            setCookie('theme', newTheme, 365); // Store preference for 1 year
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
         }
 
-        // --- On Page Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Add click listener to the button
-            themeToggleButton.addEventListener('click', toggleTheme);
-
-            // 2. Apply saved theme from cookie
-            const savedTheme = getCookie('theme');
-            if (savedTheme) {
-                applyTheme(savedTheme);
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
             } else {
-                // Optional: Check OS preference if no cookie
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    applyTheme('dark');
-                } else {
-                    applyTheme('light'); // Default
-                }
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
             }
-        });
-    </script>
+        }
 
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
 </body>
 </html>
