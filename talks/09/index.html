@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .phase-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid #FFC107;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .strategy-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .confidence-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .confidence-tip {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .leadership-principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .principle-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .phase-grid, .strategy-grid, .confidence-tips, .leadership-principles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Rebecca Long - Hacking Your Career Thru Social Engineering</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../08" class="nav-btn">← Previous Talk</a>
+            <a href="../10" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Rebecca Long, Lead DevOps Engineer at RiskLens, Founder of Future ADA</p>
+            <p><strong>Background:</strong> 15 years in tech, Master's thesis on social engineering and phishing, nonprofit founder supporting women and non-binaries in STEAM</p>
+            <p><strong>Key Focus:</strong> Applying social engineering principles ethically to advance careers, especially for minorities and introverts</p>
+        </div>
+        
+        <div class="section">
+            <h2>Why This Talk Matters</h2>
+            <p>Rebecca Long presents a practical framework for using social engineering skills to advance careers, particularly focusing on how these techniques can help overcome barriers faced by minorities and introverts in tech.</p>
+            
+            <div class="key-point">
+                <strong>Core Philosophy:</strong> "Social engineering skills can be helpful to minorities as people may know minorities do have some extra hurdles to tackle through tech careers. It's also helpful for introverts who have different types of career and networking challenges."
+            </div>
+            
+            <h3>Universal Application:</h3>
+            <ul>
+                <li>Skills applicable to any industry, not just social engineering roles</li>
+                <li>Useful for tech and non-tech careers alike</li>
+                <li>Benefits everyone regardless of background or position</li>
+                <li>Focus on ethical application for positive impact</li>
+            </ul>
+
+            <div class="quote-box">
+                "You don't actually have to limit using those skills in a social engineering role. You can use them in any tech role, you can use them outside of tech, you can use it regardless of who you are what you do."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Career Phases: Social Engineering Applications</h2>
+            
+            <div class="phase-grid">
+                <div class="phase-card">
+                    <h4>Phase 1: Job Hunting</h4>
+                    <p>Reconnaissance and preparation before applying</p>
+                </div>
+                
+                <div class="phase-card">
+                    <h4>Phase 2: Interviewing</h4>
+                    <p>Building rapport and making connections during interviews</p>
+                </div>
+                
+                <div class="phase-card">
+                    <h4>Phase 3: Career Advancement</h4>
+                    <p>Networking and positioning for promotions</p>
+                </div>
+                
+                <div class="phase-card">
+                    <h4>Phase 4: Daily Success</h4>
+                    <p>Team integration and office navigation</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Phase 1: Job Hunting - The Reconnaissance Stage</h2>
+            
+            <h3>Company Investigation:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Values & Mission Analysis</h4>
+                    <p>Research company values, mission statements, and public positioning to understand cultural fit</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Team Recon</h4>
+                    <p>Identify hiring managers, team members, and understand team dynamics before applying</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Reference Checking</h4>
+                    <p>Leverage network to get insider perspectives on company culture and reputation</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Company Blacklisting:</strong> "I have a list of companies that I wouldn't work for. If you're looking at a company you don't know anything about, check with people who might know, see if they're on anyone's blacklist."
+            </div>
+
+            <h3>Key Recon Questions:</h3>
+            <ul>
+                <li>What are the company's stated values and mission?</li>
+                <li>Who is on the hiring team and what do they care about?</li>
+                <li>Do you know anyone who works there or knows the hiring manager?</li>
+                <li>What is the company's reputation in the industry?</li>
+                <li>Would people you trust recommend working there?</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Phase 2: Interviewing - Building Connection</h2>
+            
+            <h3>Pre-Interview Preparation:</h3>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <h4>Dress Code Intelligence</h4>
+                    <p>Research company culture to dress appropriately - avoid showing up in a suit if everyone wears flip-flops</p>
+                </div>
+                
+                <div class="strategy-card">
+                    <h4>Question Development</h4>
+                    <p>Prepare thoughtful questions that demonstrate research and genuine interest</p>
+                </div>
+                
+                <div class="strategy-card">
+                    <h4>Message Crafting</h4>
+                    <p>Understand what personal brand and message you want to convey through appearance and communication</p>
+                </div>
+            </div>
+
+            <h3>During the Interview:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Environmental Reading</h4>
+                    <p>Pay attention to office environment, decor, and subtle clues about company culture</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Rapport Building</h4>
+                    <p>Connect with every interviewer, find common interests, and build personal connections</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Adaptive Communication</h4>
+                    <p>Read room reactions and adjust answers based on interviewer engagement and interest</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Interview Philosophy:</strong> "When you're in the interview, you're interviewing them as much as they're interviewing you. Think of it like that and that might help spawn some questions."
+            </div>
+
+            <div class="key-point">
+                <strong>Gratitude Practice:</strong> "Thank everyone for their time. People are taking time away from their projects to talk to you, and they might not hire you. Thank them when you show up, when you leave, and in a follow-up note."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Phase 3: Career Advancement & Networking</h2>
+            
+            <h3>Strategic Networking:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Internal Networking</h4>
+                    <p>Build relationships with decision-makers, executives, and influential people within your company</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>External Networking</h4>
+                    <p>Maintain professional relationships outside your company for career safety and opportunity awareness</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Elevator Pitch Mastery</h4>
+                    <p>Develop and practice a 30-60 second personal introduction that highlights your value proposition</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Career Safety Net:</strong> "I'm a big believer in having a safety net. I don't trust any one particular company to last forever. Having a network outside of your company knowing where other opportunities might be is really important."
+            </div>
+
+            <h3>Networking Principles:</h3>
+            <ul>
+                <li>Build rapport before you need something</li>
+                <li>Understand what key people care about and how you can help</li>
+                <li>Identify organizational gaps you can fill</li>
+                <li>Maintain authenticity in all interactions</li>
+                <li>Be genuine and build real relationships</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Phase 4: Daily Success & Team Integration</h2>
+            
+            <h3>Conveying Confidence:</h3>
+            <div class="confidence-tips">
+                <div class="confidence-tip">
+                    <h4>Power Poses</h4>
+                    <p>Use Wonder Woman pose and other power poses before important meetings</p>
+                </div>
+                
+                <div class="confidence-tip">
+                    <h4>Space Occupation</h4>
+                    <p>Take up physical space (men do this naturally, women often need to learn this)</p>
+                </div>
+                
+                <div class="confidence-tip">
+                    <h4>Strong Presence</h4>
+                    <p>Good eye contact, firm handshake, strong posture</p>
+                </div>
+                
+                <div class="confidence-tip">
+                    <h4>Fake It Till You Make It</h4>
+                    <p>Pretend confidence even when experiencing imposter syndrome</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Imposter Syndrome Strategy:</strong> "Have some confidence that you know what you're doing and people around you believe in you. Lean on that. It helps me battle imposter syndrome regularly."
+            </div>
+
+            <h3>Team Integration Strategies:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Personal Connection Building</h4>
+                    <p>Get to know team members as people - learn about families, hobbies, and personal interests</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Trust Development</h4>
+                    <p>Build trust through competence, confidentiality, and consistent follow-through</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Empathy Practice</h4>
+                    <p>Recognize that everyone has bad days and personal challenges affecting work performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Office Politics & Meeting Mastery</h2>
+            
+            <h3>Navigating Office Politics:</h3>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <h4>Relationship-First Approach</h4>
+                    <p>Focus on building strong interpersonal relationships as foundation for navigating politics</p>
+                </div>
+                
+                <div class="strategy-card">
+                    <h4>Direct Information Gathering</h4>
+                    <p>Get information directly from sources rather than through rumor mills</p>
+                </div>
+                
+                <div class="strategy-card">
+                    <h4>Ethical Advocacy</h4>
+                    <p>Use charm and persuasion to fight for projects and resources you believe in</p>
+                </div>
+            </div>
+
+            <h3>Effective Meeting Strategies:</h3>
+            <ul>
+                <li><strong>Structure for Impact:</strong> Maximize efficiency with clear agendas and time limits</li>
+                <li><strong>Read the Room:</strong> Pay attention to engagement levels and adjust accordingly</li>
+                <li><strong>Decision-Maker Presence:</strong> Ensure key decision-makers are in important meetings</li>
+                <li><strong>Transparency:</strong> Address trust issues if there are many post-meeting side discussions</li>
+                <li><strong>Action Orientation:</strong> Ensure meetings result in clear decisions and action items</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Meeting Red Flag:</strong> "If there's a lot of post-meetings or closed-door meetings after your meeting, what that is implying is that there's trust issues on the team. People don't feel comfortable and safe to share openly in the official meeting."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Leadership & Emotional Intelligence</h2>
+            
+            <div class="key-point">
+                <strong>Leadership vs Management:</strong> "A leader is not necessarily a manager. Managers and leaders are different roles. You can be a leader at any level of the company at any role that you might be playing."
+            </div>
+
+            <div class="leadership-principles">
+                <div class="principle-card">
+                    <h4>Emotional Intelligence Impact</h4>
+                    <p>"Higher emotional quotients have greater sensitivity and empathy, are rated as more effective, receive higher performance ratings, develop high-performing effective teams, and create a healthier culture."</p>
+                </div>
+                
+                <div class="principle-card">
+                    <h4>Stress Buffer Theory</h4>
+                    <p>Daniel Goleman: "Quality of relationships is what, as well as their sheer numbers, seems key and buffering stress." Strong relationships help teams weather stressful periods.</p>
+                </div>
+                
+                <div class="principle-card">
+                    <h4>Whole Self Inclusion</h4>
+                    <p>Create environments where people can bring their full selves to work. People are more productive when they don't have to hide parts of themselves.</p>
+                </div>
+            </div>
+
+            <h3>Empathetic Leadership Practices:</h3>
+            <ul>
+                <li>Recognize major life events and their emotional impact on team members</li>
+                <li>Remember and acknowledge birthdays and personal milestones</li>
+                <li>Value every team member equally regardless of position</li>
+                <li>Create positive feedback loops and safe spaces for constructive criticism</li>
+                <li>Lead by example in giving and receiving feedback</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways & Final Wisdom</h2>
+            
+            <h3>Essential Career Hacking Principles:</h3>
+            <ol>
+                <li>Social engineering is fundamentally about understanding and connecting with people</li>
+                <li>Use reconnaissance and preparation at every career stage</li>
+                <li>Build genuine relationships before you need them</li>
+                <li>Convey confidence through presence and preparation</li>
+                <li>Navigate office politics through strong interpersonal relationships</li>
+                <li>Apply emotional intelligence in leadership at every level</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Core Message:</strong> "Social engineering and your career - all of this is really about people. Social engineering is using people skills. Cybersecurity is about people - the whole point of it is to secure people and their data."
+            </div>
+
+            <div class="quote-box">
+                "We're stronger when we all care about each other. You can use all these skills to positively impact your career and your life. Use our powers for good."
+            </div>
+
+            <h3>Recommended Resources:</h3>
+            <ul>
+                <li>Amy Cuddy's TED Talk on power poses and presence</li>
+                <li>Daniel Goleman's work on emotional intelligence</li>
+                <li>Future ADA (Rebecca's nonprofit) for diversity in STEAM</li>
+                <li>Practice and refinement of elevator pitches</li>
+                <li>Continuous development of networking and relationship-building skills</li>
+            </ul>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../08" class="nav-btn">← Previous Talk</a>
+            <a href="../10" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Rebecca Long Career Hacking Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
