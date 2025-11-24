@@ -3,284 +3,668 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEF CON 27: Marcus Liotta</title>
+    <title>DEF CON 27 Social Engineering Village Notes</title>
     <style>
-        /* * 1. CSS Variables for Theming 
-         */
         :root {
-            --bg-color: #f9f9f9;
-            --text-color: #333;
-            --border-color: #ddd;
-            --header-color: #d40000; /* DEF CON Red */
-            --header-sub-color: #555;
-            --code-bg-color: #eee;
-            --shadow-color: rgba(0,0,0,0.05);
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
         }
 
-        body.dark-theme {
-            --bg-color: #2b2b2b;
-            --text-color: #f1f1f1;
-            --border-color: #555;
-            --header-color: #ff4141; /* Lighter Red for dark bg */
-            --header-sub-color: #ccc;
-            --code-bg-color: #444;
-            --shadow-color: rgba(0,0,0,0.2);
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
         }
-
-        /* * 2. General Body Styles (using variables)
-         */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
             line-height: 1.6;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 25px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            transition: background-color 0.3s, color 0.3s;
         }
-
+        
         .container {
-            padding: 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        /* * 3. Theme Toggle Button Styles
-         */
-        #theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 12px;
-            font-size: 0.9em;
-            font-weight: bold;
-            background-color: var(--code-bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
         }
-
-        #theme-toggle:hover {
-            opacity: 0.8;
-        }
-
-        /* * 4. Content Styles (using variables)
-         */
+        
         h1 {
-            color: var(--header-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
         }
-        h2 {
-            color: var(--header-sub-color);
-            font-style: italic;
-            font-weight: normal;
-            font-size: 1.2em;
-            margin-top: -10px;
-        }
-        h3 {
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-top: 40px;
-        }
-        h4 {
-            color: var(--text-color);
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
             margin-bottom: 5px;
         }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
         p {
             margin-bottom: 15px;
         }
-        ul {
+        
+        ul, ol {
             margin-left: 20px;
             margin-bottom: 15px;
         }
+        
         li {
             margin-bottom: 8px;
         }
-        code, pre {
-            background-color: var(--code-bg-color);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: "Courier New", Courier, monospace;
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .stat-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border-top: 3px solid var(--highlight);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .effectiveness-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .scale-item {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .scale-item.effective {
+            border-top: 3px solid #4CAF50;
+        }
+
+        .scale-item.ineffective {
+            border-top: 3px solid #f44336;
+        }
+
+        .scale-item.mixed {
+            border-top: 3px solid #FFC107;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .effectiveness-scale {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-
-    <button id="theme-toggle">Switch to Dark Mode</button>
-
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Marcus Liotta - Leveraging the Insider Threat</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
     <div class="container">
-        <h1>Leveraging the Insider Threat (And How to Be Awesome)</h1>
-        <h2>Marcus Liotta - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../05" class="nav-btn">← Previous Talk</a>
+            <a href="../07" class="nav-btn disabled">Next Talk →</a>
+        </div>
 
-        <h3>Introduction</h3>
-        <p>
-            The talk begins with a clarification: you can't teach everyone "to be awesome," but you can **"teach people how to believe you are awesome."** This builds confidence and motivational value.
-        </p>
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Marcus Liotta, 13-year Systems Engineer & Technology Veteran</p>
+            <p><strong>Background:</strong> Psychology and social engineering specialist, published fictional works employing psychological concepts</p>
+            <p><strong>Key Focus:</strong> Understanding human psychology in security, practical social engineering tactics, and being "awesome"</p>
+        </div>
+        
+        <div class="section">
+            <h2>The "Awesome" Philosophy</h2>
+            <p>Marcus Liotta begins with a unique perspective on personal effectiveness in security and social engineering contexts.</p>
+            
+            <div class="key-point">
+                <strong>Core Insight:</strong> "Not everybody can be awesome, but you can teach people how to believe you are awesome. That gives you motivational value, confidence in yourself, and enables you to do things like get up on stage at SE Village."
+            </div>
+            
+            <h3>Benefits of Being Perceived as Awesome:</h3>
+            <ul>
+                <li>Increased personal motivation and confidence</li>
+                <li>Enhanced ability to influence others</li>
+                <li>Greater professional opportunities</li>
+                <li>Improved social engineering effectiveness</li>
+                <li>Better team leadership and collaboration</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Current Threat Landscape Statistics</h2>
+            
+            <h3>2016-2017 Threat Increases:</h3>
+            <div class="technique-grid">
+                <div class="stat-card">
+                    <div class="stat-number">55%</div>
+                    <p>of email is considered spam</p>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">80%</div>
+                    <p>more attacks on Mac OS</p>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">600%</div>
+                    <p>more attacks on IoT devices</p>
+                </div>
+            </div>
 
-        <h3>The Modern Threat Landscape (Statistics)</h3>
-        <p>
-            Marcus outlines a massive increase in threats from 2016-2018, citing Symantec and Verizon reports.
-        </p>
-        <ul>
-            <li><strong>55% of all email</strong> is still considered spam (phishing, ads, junk).</li>
-            <li><strong>600% increase</strong> in attacks on IoT devices.</li>
-            <li><strong>1000% increase</strong> in PowerShell-based malware attacks.</li>
-            <li><strong>1 in 10 emails</strong> scanned at corporate gateways is malicious.</li>
-            <li><strong>7,700 organizations</strong> are hit by Business Email Compromise (BEC) scams *every month*.</li>
-            <li><strong>71% of attacks</strong> are spearfishing (targeted, information-backed attacks).</li>
-        </ul>
+            <h3>2017-2018 Threat Evolution:</h3>
+            <ul>
+                <li>Some malicious attacks decreased (surprisingly)</li>
+                <li>Ransomware increased on corporate gateway infrastructure</li>
+                <li>55% of email still spam in 2018</li>
+                <li>80% increase in IoT device attacks</li>
+                <li>1000% increase in PowerShell-based ransomware</li>
+            </ul>
 
-        <h3>On-Location & Future Threats</h3>
-        <ul>
-            <li><strong>Wi-Fi Replication:</strong> Creating fake Wi-Fi gateways to steal credentials (rogue APs).</li>
-            <li><strong>Mobile Hijacking:</strong> Malicious apps (like a fake "flappy bird") that steal banking info or perform cryptojacking.</li>
-            <li><strong>Drones:</strong> Using drones to create mobile, malicious Wi-Fi portals.</li>
-            <li><strong>Real-World Example:</strong> In June (2019), **NASA was hacked** via an unauthorized Raspberry Pi (an IoT device) connected to their network. The attacker stole moon-landing data.</li>
-        </ul>
+            <div class="key-point">
+                <strong>PowerShell Importance:</strong> "PowerShell is a very useful tool. I use it in system engineering all the time and highly recommend anybody in the technical field learn at least a little bit about PowerShell because it's such a powerful tool."
+            </div>
+        </div>
 
-        <h3>The One Common Factor: People</h3>
-        <p>
-            The single common factor behind all these threats is **people**. People are the intelligence behind every attack.
-        </p>
+        <div class="section">
+            <h2>Spear Phishing & Current Attack Methods</h2>
+            
+            <div class="stat-card">
+                <div class="stat-number">71%</div>
+                <p>of current attacks against companies involve spear phishing</p>
+            </div>
 
-        <h3>Psychological Manipulation Tactics (Effectiveness)</h3>
-        <p>
-            An analysis of which social engineering tactics actually work.
-        </p>
-        <ul>
-            <li><strong>Ineffective: Threats & Abuse.</strong> Threatening someone ("you're gonna lose your job") makes them angry and uncooperative.</li>
-            <li><strong>Ineffective: Reason-Based Tactics.</strong> People are fundamentally "lazy." If you give them a reason that requires them to do extra work, they "don't care" and will "buzz you off."</li>
-            <li><strong>Effective: Charm Tactics.</strong> Joking and being pleasant makes people enjoy your company and want to help.</li>
-            <li><strong>Effective: Mutually Beneficial.</strong> This is why "Prince" scams (greed) worked so well. "Do a small favor, get $10,000."</li>
-        </ul>
+            <h3>Spear Phishing Definition:</h3>
+            <p>"The act of gathering information beforehand to specifically target individuals for whether it be information, profit like getting a wire transfer because you're trying to be the CEO and get an accountant to do it, etc."</p>
 
-        <h3>Attack & Manipulation Techniques</h3>
-        <ul>
-            <li><strong>The "One Shot" Rule:</strong> You have one shot to build trust. If you explore too many tactics and fail, that person will no longer trust you.</li>
-            <li><strong>Lying:</strong> Marcus argues *against* lying.
-                <ul>
-                    <li>It's not the most effective option.</li>
-                    <li>It's **"very difficult to maintain a lie"** over time.</li>
-                    <li>It breaks relationships and long-term trust (bad for an attacker wanting persistent access).</li>
-                </ul>
-            </li>
-            <li><strong>Lying by Omission:</strong> Not telling the whole truth (e.g., the dog not telling you it ate the trash).</li>
-            <li><strong>Rationalization:</strong> Playing dumb to justify an action. ("Oh, I didn't know I needed an ID card, I'm just cleaning up...").</li>
-            <li><strong>Guilt Trip:</strong> Making a failure your fault. ("I couldn't do my job because the report *you* gave me got thrown out...").</li>
-            <li><strong>Servant Role:</strong> Using a position of (often fake) authority. ("Dispatch said we've got to take you in...").</li>
-            <li><strong>Bandwagon Effect:</strong> "Everybody does it." This is a major risk in corporate culture ("Jake did the same thing," "IT needs your password, I gave him mine...").</li>
-        </ul>
+            <h3>Additional Attack Statistics:</h3>
+            <ul>
+                <li>1 in 10 emails at corporate gateways are malicious (up from 7% a year ago)</li>
+                <li>7,700 organizations hit by email compromise scams every month</li>
+                <li>These represent only successfully invaded organizations</li>
+            </ul>
 
-        <h3>Prevention: Leveraging the (Good) Insider</h3>
-        <p>
-            This section covers the *defensive* side: how to leverage your employees (the insiders) to build a strong defense.
-        </p>
-        <ul>
-            <li><strong>Lock your computer.</strong> Enforce screen lock timeouts.</li>
-            <li><strong>Train users to be suspicious.</strong> Assume callers and emails *could* be fraudulent.</li>
-            <li>Use **external email flagging** on your mail gateway.</li>
-            <li>Conduct **quarterly training**.</li>
-            <li>Train users to **verify a caller's identity** *before* revealing sensitive info.</li>
-            <li>Define **proper, clear reporting procedures** so users know who to contact.</li>
-        </ul>
+            <div class="offensive-point">
+                <strong>Training Imperative:</strong> "If your employees are not trained or users are not trained to combat this, then often they're not going to know to disobey orders. It's very important to have training sessions throughout corporate infrastructure."
+            </div>
+        </div>
 
-        <h3>How to Be Awesome: Leveraging Your *Own* Influence</h3>
-        <p>
-            This is the *offensive* (personal influence) side of the talk: how to make people *believe* you are awesome.
-        </p>
-        <ul>
-            <li><strong>Be Bold:</strong> Be the person in the room who "raises their hand" and has the answer.</li>
-            <li><strong>Mirroring:</strong> Mirror behavior and emotions. People like people who are like them.</li>
-            <li><strong>Tactic: Repeated Wordplay.</strong>
-                <ul>
-                    <li>As an IT guy, Marcus would fix a problem and joke, "No problem, I'm just awesome like that."</li>
-                    <li>After 27 days, "dozens of people" in the company started saying it *for him*: "Oh, Marcus? Yeah, he's just awesome like that."</li>
-                </ul>
-            </li>
-            <li><strong>Tactic: The Restaurant Review (How to get free sushi).</strong>
+        <div class="section">
+            <h2>Emerging Physical & Location-Based Threats</h2>
+            
+            <h3>New Attack Vectors:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Wi-Fi Replication</h4>
+                    <p>Fake Wi-Fi gateways that mimic legitimate ones to steal credentials and information from connecting devices</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Mobile Hijacking</h4>
+                    <p>Malware on mobile devices for credential theft, cryptojacking, and information gathering</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Drone-Based Attacks</h4>
+                    <p>Mobile malicious Wi-Fi portals and surveillance using drone technology</p>
+                </div>
+            </div>
+
+            <div class="case-study">
+                <h4>NASA IoT Compromise (June 2019):</h4>
+                <p>A NASA engineer accidentally hooked up a Raspberry Pi to an important network segment, leading to compromise and theft of moon landing data. Demonstrates how even advanced organizations can be vulnerable to simple IoT-based attacks.</p>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Human Factor:</strong> "All the threats I've talked about have one common factor: people. People are the main threat behind any attack because without scripting that code for a specific purpose, you're not going to have anything at all."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Psychological Manipulation Tactics Effectiveness</h2>
+            
+            <div class="effectiveness-scale">
+                <div class="scale-item ineffective">
+                    <h4>Threats & Abuse</h4>
+                    <p><strong>Not Effective</strong> - Makes people uncooperative and defensive</p>
+                </div>
+                
+                <div class="scale-item effective">
+                    <h4>Charm Tactics</h4>
+                    <p><strong>Effective</strong> - Creates positive reactions and builds rapport</p>
+                </div>
+                
+                <div class="scale-item effective">
+                    <h4>Mutually Beneficial</h4>
+                    <p><strong>Effective</strong> - Classic "Nigerian Prince" style approaches</p>
+                </div>
+                
+                <div class="scale-item ineffective">
+                    <h4>Reason-Based Tactics</h4>
+                    <p><strong>Not Effective</strong> - People don't want to do additional work</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Human Nature Insight:</strong> "People at a very genetic level, a very base level, don't want to do things. I'm lazy, I'm sure most of you are lazy. Telling somebody if you do this then it's going to work out this way - they don't care because it's going to take too much time and effort."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Social Engineering Attack Methodology</h2>
+            
+            <div class="case-study">
+                <h4>Standard Attack Progression:</h4>
                 <ol>
-                    <li>Go to a restaurant and socialize with your server. Get their name.</li>
-                    <li>Leave a 5-star review (e.g., on Google) and **use their name** in the review.</li>
-                    <li>Show the server the review. Show their *manager* the review.</li>
-                    <li>When you come back, they will remember you. After a few times, "you're going to start getting free stuff."</li>
+                    <li><strong>Victim Identification:</strong> Attacker identifies potential target</li>
+                    <li><strong>Research & Analysis:</strong> Victim is researched directly or indirectly</li>
+                    <li><strong>Approach Determination:</strong> Direct or indirect approach selected</li>
+                    <li><strong>Tactic Exploration:</strong> Common social engineering tactics applied</li>
+                    <li><strong>Result Achievement:</strong> Success or failure of the attempt</li>
                 </ol>
-            </li>
-            <li><strong>Key Philosophy: Users are NOT the Enemy.</strong> If you work in IT or programming, do not "crush their rebellion." Help them.</li>
-            <li><strong>Teamwork:</strong> Rely on your friends and team. Everyone has an attribute you do not have.</li>
-        </ul>
+            </div>
 
+            <div class="key-point">
+                <strong>Trust Building Principle:</strong> "You basically have one shot with any one person. Once it's done, they don't trust you anymore. The whole point of social engineering is you have to build trust so they like you and want to help you."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Advanced Psychological Techniques</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Lying by Omission</h4>
+                    <p>Selectively withholding information rather than outright falsehoods. Example: "Your dog won't tell you he dumped over the trash."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Rationalization</h4>
+                    <p>Justifying questionable actions with plausible explanations. Example: "I'm just cleaning up" when caught somewhere unauthorized.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Guilt Tripping</h4>
+                    <p>Making others feel responsible for problems. Example: "I couldn't do my job because that report you put on my desk got thrown away."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Servant Role</h4>
+                    <p>Using authority figures who are "just doing their job" to compel compliance without question.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Bandwagon Effect</h4>
+                    <p>Justifying actions because "everybody does it." Common in workplace scenarios for bypassing procedures.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Lying Limitations:</strong> "Lies do not maintain over a period of time. It is very difficult to maintain a lie for any significant period. If you're trying to do things as an attacker and you want additional access later, lying is only going to hurt your purpose."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Practical Prevention Strategies</h2>
+            
+            <h3>Essential Security Measures:</h3>
+            <ul>
+                <li><strong>Door Access Controls:</strong> Physical security for workplace entry</li>
+                <li><strong>Screen Lock Timeouts:</strong> Automatic locking of unattended devices</li>
+                <li><strong>Suspicious Behavior Reporting:</strong> Clear procedures and contacts</li>
+                <li><strong>External Email Flagging:</strong> Visual indicators for external messages</li>
+                <li><strong>Attachment/Link Caution:</strong> Training on email security</li>
+            </ul>
+
+            <h3>Recommended Training Schedule:</h3>
+            <ul>
+                <li>Quarterly security awareness training</li>
+                <li>Phone caller identity verification procedures</li>
+                <li>Clear reporting channels for security concerns</li>
+                <li>Assume callers and emails could be fraudulent</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>User Education:</strong> "Users are not the enemy. The user complains - you want to not crush their rebellion if you're in IT. Teach people to be suspicious and assume that callers and emails could be fraudulent."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Art of Being Awesome - Practical Applications</h2>
+            
+            <h3>Marcus's "Awesome" Methodology:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Be Bold</h4>
+                    <p>Be the person who raises their hand and has answers. Confidence builds perception of competence.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Mirror Behaviors</h4>
+                    <p>Match other people's mannerisms and interests to build rapport and likeness.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Repeated Word Play</h4>
+                    <p>Consistently use specific phrases that become associated with your personal brand.</p>
+                </div>
+            </div>
+
+            <div class="case-study">
+                <h4>Corporate "Awesome" Experiment:</h4>
+                <p>Marcus consistently used the phrase "I'm just awesome like that" when helping coworkers. After 27 days, dozens of people were repeating the phrase about him without prompting, demonstrating the power of consistent personal branding.</p>
+            </div>
+
+            <h3>Additional "Awesome" Techniques:</h3>
+            <ul>
+                <li><strong>Don't Say "Google It":</strong> Provide answers directly rather than redirecting</li>
+                <li><strong>Leave Personalized Reviews:</strong> Use names and specific compliments in business reviews</li>
+                <li><strong>Always Be Available:</strong> Be the person who can get things done</li>
+                <li><strong>Leverage Teamwork:</strong> Recognize everyone has unique attributes to offer</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>Restaurant Review Strategy:</strong> "I have gotten free sushi at a number of sushi restaurants just by leaving personalized 5-star reviews with server names. When you come back, they remember you and you start getting free stuff."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Security Professionals</h2>
+            
+            <h3>Essential Lessons:</h3>
+            <ol>
+                <li>Human psychology is the foundation of all security threats and defenses</li>
+                <li>Charm and mutually beneficial approaches outperform threats and reasoning</li>
+                <li>Trust building is more effective than deception for long-term access</li>
+                <li>Personal branding and perceived competence enhance social engineering effectiveness</li>
+                <li>Emerging threats combine digital and physical attack vectors</li>
+                <li>Continuous user education is crucial for organizational security</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Thought:</strong> "Everybody has an attribute that you do not have. It's important to rely on team members and use your friends for what they have to offer because everybody has something to offer."
+            </div>
+
+            <div class="offensive-point">
+                <strong>Security Mindset:</strong> The most effective security professionals understand both technical vulnerabilities and human psychology. Being "awesome" isn't just about personal success - it's about building the trust and influence necessary to implement effective security measures.
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../05" class="nav-btn">← Previous Talk</a>
+            <a href="../07" class="nav-btn disabled">Next Talk →</a>
+        </div>
     </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Marcus Liotta Insider Threat Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
 
     <script>
-        // --- Cookie Helper Functions ---
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
-        }
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
 
+        // Function to get cookie value
         function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
-        // --- Theme Logic ---
-        const themeToggleButton = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                body.classList.add('dark-theme');
-                themeToggleButton.textContent = 'Switch to Light Mode';
-            } else {
-                body.classList.remove('dark-Teme');
-                themeToggleButton.textContent = 'Switch to Dark Mode';
-            }
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
         }
 
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
         function toggleTheme() {
-            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            applyTheme(newTheme);
-            setCookie('theme', newTheme, 365); // Store preference for 1 year
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
         }
 
-        // --- On Page Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Add click listener to the button
-            themeToggleButton.addEventListener('click', toggleTheme);
-
-            // 2. Apply saved theme from cookie
-            const savedTheme = getCookie('theme');
-            if (savedTheme) {
-                applyTheme(savedTheme);
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
             } else {
-                // Optional: Check OS preference if no cookie
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    applyTheme('dark');
-                } else {
-                    applyTheme('light'); // Default
-                }
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
             }
-        });
-    </script>
+        }
 
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
 </body>
 </html>
