@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27: SEPodcast Ep 120 Live</title>
+    <style>
+        /* * 1. CSS Variables for Theming 
+         */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-color: #d40000; /* DEF CON Red */
+            --header-sub-color: #555;
+            --code-bg-color: #eee;
+            --shadow-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme {
+            --bg-color: #2b2b2b;
+            --text-color: #f1f1f1;
+            --border-color: #555;
+            --header-color: #ff4141; /* Lighter Red for dark bg */
+            --header-sub-color: #ccc;
+            --code-bg-color: #444;
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        /* * 2. General Body Styles (using variables)
+         */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        /* * 3. Theme Toggle Button Styles
+         */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: var(--code-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* * 4. Content Styles (using variables)
+         */
+        h1 {
+            color: var(--header-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--header-sub-color);
+            font-style: italic;
+            font-weight: normal;
+            font-size: 1.2em;
+            margin-top: -10px;
+        }
+        h3 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code, pre {
+            background-color: var(--code-bg-color);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">Switch to Dark Mode</button>
+
+    <div class="container">
+        <h1>The SEPodcast Ep 120: Live with Robin Dreeke</h1>
+        <h2>DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+
+        <h3>Introduction: 10th Anniversary</h3>
+        <p>
+            Chris Hadnagy kicks off the live podcast, marking the 10th-anniversary episode. He introduces his guests, **Robin Dreeke** (former FBI, author) and **Perry Carpenter** (KnowBe4).
+        </p>
+        <ul>
+            <li>Chris jokes about a typo on the DEF CON schedule that listed Perry Carpenter as "Penny," which has led to relentless teasing.</li>
+            <li>Robin Dreeke's first appearance on the podcast was in 2010 (Episode 16).</li>
+        </ul>
+
+        <h3>Robin Dreeke's New Book: "Sizing People Up"</h3>
+        <p>
+            Robin discusses the evolution of his books and philosophy, which he sees as a continuum:
+        </p>
+        <ol>
+            <li><strong>Rapport ("It's Not All About Me"):</strong> This book was born directly from a last-minute request by Chris for a podcast talk on "how to develop rapport in 10 minutes."</li>
+            <li><strong>Trust ("The Code of Trust"):</strong> He realized rapport is just a tool. The real purpose is to build **trust**.</li>
+            <li><strong>Prediction ("Sizing People Up"):</strong> The newest book. Once you get good at understanding what builds trust for a specific person, you can start to **predict their behavior.**</li>
+        </ol>
+        <p>
+            The goal of "Sizing People Up" is not just to "read" people, but to build healthy relationships. By understanding what you can "reasonably expect" from someone, you can set the bar appropriately and **never be disappointed** by their behavior.
+        </p>
+
+        <h3>Perry Carpenter's Talk on Autism & SE</h3>
+        <p>
+            Perry discusses his own talk from the SE Village, which was about being on the autism spectrum and how he used social engineering skills (some knowingly, some not) to navigate his life and career.
+        </p>
+        <ul>
+            <li>He had to learn, in a "methodical and cold" way, to mimic and understand emotions to build genuine connections, which can be a challenge for some on the spectrum.</li>
+        </ul>
+
+        <h3>SECTF 2019 Debrief & Key Takeaways</h3>
+        <p>
+            A large part of the discussion was a debrief of the year's Social Engineering Capture The Flag (SECTF) competition.
+        </p>
+        <ul>
+            <li><strong>Theme:</strong> Alcohol, Tobacco, and Firearms (ATF) companies.</li>
+            <li><strong>OSINT is King:</strong> Robin noted the "most striking thing" was that the winners had the best OSINT. "You need a great blend of your ability to do research and then your ability to employ that research."</li>
+            <li><strong>Winner's Report:</strong> The first-place winner (Aleethe) had a 127-page, perfect-score report. Her OSINT was "mind-blowing," such as finding flags by **zooming in on desktop icons** visible in the background of an employee's social media photo.</li>
+            <li><strong>The "Paternity Leave" Pretext:</strong> One contestant had a target who was gruff, until he mentioned he was on paternity leave. She immediately built a "tribe" connection by saying she also just had a baby. His entire demeanor changed, and he "booted his computer" to give her every single flag.</li>
+            <li><strong>Top Elicitation Technique:</strong> Using an "intentional misstatement" (e.g., "so you must be on your Dell computer right now..."). The human need to correct others is so strong that the target will often correct them with the flag ("Oh no, we all use Macs here").</li>
+        </ul>
+        
+        <h3>Advice on Public Speaking & Engagement</h3>
+        <ul>
+            <li><strong>Reframe Your Context:</strong> Robin's advice is to shift your mindset. It's not "a thousand people are here to judge me," it's "I'm about to have a great conversation with a bunch of friends."</li>
+            <li><strong>The Audience is on Your Side:</strong> Chris noted, "People want you to succeed." They are there because they believe you are an expert.</li>
+            <li><strong>Look for Positive Feedback:</strong> Robin scans the audience for "smiles and nods." He used the same technique in undercover work ("look for someone who's smiling") to find people who are open to engagement.</li>
+        </ul>
+
+        <h3>Audience Q&A Highlights</h3>
+
+        <h4>Q: How do you build trust digitally?</h4>
+        <ul>
+            <li><strong>Robin's Answer:</strong> "It's easier." In writing, you can slow down and meticulously craft every statement to be about the other person.</li>
+            <li><strong>The 4-Step Method:</strong> Every statement must do one of these:
+                <ol>
+                    <li>Seek their thoughts and opinions.</li>
+                    <li>Talk in terms of their priorities.</li>
+                    <li>Validate those priorities (without judgment).</li>
+                    <li>Empower them with choice.</li>
+                </ol>
+            </li>
+            <li><strong>Example:</strong> His son's teacher misgraded an exam. Instead of saying, "You're wrong," they crafted an email that sought her thoughts ("What do you think..."), validated her passion for teaching, and empowered her with choice ("...he can do to improve?"). She was inspired to check the grading key and fixed the scores for the whole class.</li>
+        </ul>
+
+        <h4>Q: Aren't you just manipulating people?</h4>
+        <ul>
+            <li><strong>Robin's Answer:</strong> "Yes." If you are controlling the time, thoughts, or actions of another, it is manipulation. However, what mitigates the harm is **transparency** and **purpose**. The SECTF's purpose is education, and they publish everything.</li>
+            <li><strong>Chris's Answer:</strong> He differentiates based on **intent**.
+                <ul>
+                    <li><strong>Manipulation:</strong> One-sided, negative intent (e.g., stealing).</li>
+                    <li><strong>Influence:</strong> Positive intent (e.g., education, helping).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>Q: Career change advice for someone with a teaching/psychology background?</h4>
+        <ul>
+            <li><strong>Perry's Answer:</strong> You have immense value. Look at "awareness design" roles. **Ignore "5 years of security experience"** on job postings and get in front of a recruiter.</li>
+            <li><strong>Robin's Answer:</strong> **Write about it.** Publish articles. This builds credibility and passion that a resume can't show.</li>
+        </ul>
+
+        <h4>Q: Is anyone using Adult Learning Theory (guided discussion) for end-user training?</h4>
+        <ul>
+            <li><strong>Chris's Answer:</strong> Describes their model as a decentralized version. By **incentivizing positive behavior** (reporting phishes) instead of punishing failure, they create a positive social conversation.</li>
+            <li><strong>Example:</strong> A client's department had a "King Fisher" award (a plush Nemo doll) for the first person to report the phish. 1,800 adults fought over this doll, and it got everyone talking about security.</li>
+        </ul>
+
+        <h4>Q: Sales engineering feels disingenuous. How to handle "l
