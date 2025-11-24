@@ -12,6 +12,7 @@
             --highlight: #e94560;
             --text: #f1f1f1;
             --border: #2d4059;
+            --shadow: rgba(0, 0, 0, 0.2);
         }
 
         [data-theme="light"] {
@@ -21,6 +22,7 @@
             --highlight: #e74c3c;
             --text: #2c3e50;
             --border: #d1d8e0;
+            --shadow: rgba(0, 0, 0, 0.1);
         }
         
         * {
@@ -35,6 +37,16 @@
             background-color: var(--primary);
             color: var(--text);
             line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(15, 52, 96, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(233, 69, 96, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+        }
+
+        [data-theme="light"] body {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(74, 144, 226, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(231, 76, 60, 0.1) 0%, transparent 20%);
         }
         
         .container {
@@ -45,32 +57,62 @@
         
         header {
             background: linear-gradient(135deg, var(--secondary), var(--accent));
-            padding: 30px 0;
+            padding: 40px 0;
             text-align: center;
             border-bottom: 3px solid var(--highlight);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(79, 195, 247, 0.1) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        [data-theme="light"] header::before {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(231, 76, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(74, 144, 226, 0.1) 0%, transparent 50%);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             color: var(--text);
+            text-shadow: 2px 2px 4px var(--shadow);
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             opacity: 0.9;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        .author {
+        .tagline {
             font-style: italic;
-            margin-bottom: 20px;
+            margin-top: 20px;
             color: var(--text);
-            opacity: 0.7;
+            opacity: 0.8;
+            font-size: 1.1rem;
         }
-
+        
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -85,228 +127,205 @@
             gap: 8px;
             color: var(--text);
             font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px var(--shadow);
             z-index: 10;
         }
 
         .theme-toggle:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px var(--shadow);
         }
 
         .theme-icon {
             font-size: 1.2rem;
         }
-
-        .nav-buttons {
+        
+        .main-content {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .nav-btn {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            background: var(--highlight);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.disabled {
-            background: var(--border);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .nav-btn.disabled:hover {
-            transform: none;
-            background: var(--border);
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 50px;
         }
         
-        .talk-info {
+        .intro {
             background-color: var(--secondary);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px var(--shadow);
+            max-width: 900px;
+            text-align: center;
             border-left: 4px solid var(--highlight);
         }
         
-        .section {
+        .intro p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .talks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        .talk-card {
+            background: linear-gradient(145deg, var(--secondary), var(--accent));
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px var(--shadow);
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .talk-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow);
+        }
+        
+        .talk-title {
+            font-size: 1.5rem;
+            color: var(--highlight);
+            margin-bottom: 15px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .talk-speaker {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #4fc3f7;
+        }
+
+        [data-theme="light"] .talk-speaker {
+            color: #2980b9;
+        }
+        
+        .talk-description {
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--highlight), #ff6b8b);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px var(--shadow);
+            border: none;
+            cursor: pointer;
+            margin-top: auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 10px var(--shadow);
+            background: linear-gradient(to right, #ff6b8b, var(--highlight));
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
             background-color: var(--secondary);
             padding: 25px;
             border-radius: 8px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        h2 {
-            color: var(--highlight);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        h3 {
-            color: #4fc3f7;
-            margin: 15px 0 10px;
-        }
-
-        [data-theme="light"] h3 {
-            color: #2980b9;
-        }
-        
-        p {
-            margin-bottom: 15px;
-        }
-        
-        ul, ol {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-        
-        li {
-            margin-bottom: 8px;
-        }
-        
-        .key-point {
-            background-color: rgba(233, 69, 96, 0.1);
-            border-left: 3px solid var(--highlight);
-            padding: 12px 15px;
-            margin: 15px 0;
-        }
-
-        .offensive-point {
-            background-color: rgba(15, 52, 96, 0.2);
-            border-left: 3px solid #4fc3f7;
-            padding: 12px 15px;
-            margin: 15px 0;
-        }
-
-        [data-theme="light"] .offensive-point {
-            background-color: rgba(74, 144, 226, 0.1);
-        }
-        
-        .quote-box {
-            background: rgba(79, 195, 247, 0.1);
-            border-left: 4px solid #4fc3f7;
-            padding: 20px;
-            margin: 20px 0;
-            font-style: italic;
-        }
-
-        .technique-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .technique-card {
-            background: var(--accent);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #4fc3f7;
-        }
-
-        .technique-card h4 {
-            color: #4fc3f7;
-            margin-bottom: 10px;
-        }
-
-        [data-theme="light"] .technique-card h4 {
-            color: #2980b9;
-        }
-
-        .story-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .story-item {
-            background: var(--accent);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #FFC107;
-        }
-
-        .story-item h4 {
-            color: #FFC107;
-            margin-bottom: 10px;
-        }
-
-        .strategy-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .strategy-card {
-            background: var(--accent);
-            padding: 15px;
-            border-radius: 8px;
             text-align: center;
-            border-top: 3px solid #4CAF50;
+            border-top: 3px solid var(--highlight);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4fc3f7;
         }
 
-        .hero-worship-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+        [data-theme="light"] .feature-icon {
+            color: #2980b9;
         }
-
-        .worship-card {
-            background: var(--accent);
-            padding: 15px;
-            border-radius: 8px;
-            border-top: 3px solid #9C27B0;
-        }
-
-        .takeaway-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .takeaway-card {
-            background: var(--accent);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #E91E63;
+        
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--highlight);
         }
         
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 20px;
+            margin-top: 60px;
+            padding: 30px;
             border-top: 1px solid var(--border);
             color: var(--text);
             opacity: 0.7;
             font-size: 0.9rem;
         }
         
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .footer-links a {
+            color: #4fc3f7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        [data-theme="light"] .footer-links a {
+            color: #2980b9;
+        }
+        
+        .footer-links a:hover {
+            color: var(--highlight);
+        }
+        
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
-            .section {
-                padding: 15px;
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .talk-card, .intro {
+                padding: 20px;
+            }
+            
+            .features, .talks-grid {
+                grid-template-columns: 1fr;
             }
 
             .theme-toggle {
@@ -317,8 +336,8 @@
                 width: fit-content;
             }
 
-            .technique-grid, .strategy-grid, .hero-worship-grid, .takeaway-grid {
-                grid-template-columns: 1fr;
+            .talk-title {
+                min-height: auto;
             }
         }
     </style>
@@ -330,272 +349,131 @@
                 <span class="theme-icon" id="themeIcon">🌙</span>
                 <span id="themeText">Dark Mode</span>
             </button>
-            <h1>DEF CON 27 Social Engineering Village Notes</h1>
-            <p class="subtitle">Billy Boatright - Swing Away: Conquer Impostor Syndrome</p>
-            <p class="author">Notes By Aryan Giri</p>
+            <div class="header-content">
+                <h1>DEF CON 27 Social Engineering Village</h1>
+                <p class="subtitle">Comprehensive notes from the world's premier social engineering conference</p>
+                <p class="tagline">Understanding the human element of security</p>
+            </div>
         </div>
     </header>
     
     <div class="container">
-        <div class="nav-buttons">
-            <a href="../.." class="nav-btn">← Back to Home</a>
-            <a href="../10" class="nav-btn">← Previous Talk</a>
-            <a href="../12" class="nav-btn disabled">Next Talk →</a>
-        </div>
+        <div class="main-content">
+            <div class="intro">
+                <p>The Social Engineering Village at DEF CON brings together experts, researchers, and practitioners to explore the human side of security. These notes capture key insights, techniques, and demonstrations from the talks and workshops.</p>
+                <p>Learn how social engineers exploit human psychology and discover defensive strategies to protect yourself and your organization.</p>
+            </div>
+            
+            <div class="talks-grid">
+                <div class="talk-card">
+                    <h2 class="talk-title">The Real Hustle: Insights from a Professional Scam Artist</h2>
+                    <p class="talk-speaker">R Paul Wilson</p>
+                    <p class="talk-description">An impromptu talk by the creator of BBC's "The Real Hustle" sharing firsthand experiences with cons, scams, and the psychology behind why people fall for them. Wilson demonstrates classic scams and explains how understanding these techniques can improve security awareness.</p>
+                    <a href="talks/01/" class="btn">View Talk Notes</a>
+                </div>
 
-        <div class="talk-info">
-            <p><strong>Speaker:</strong> Billy Boatright, Social Engineering Specialist & Former Flair Bartender</p>
-            <p><strong>Background:</strong> DEF CON veteran, SEC CTF competitor, applies bartending psychology to information security</p>
-            <p><strong>Key Focus:</strong> Practical strategies to conquer impostor syndrome through performance mindset and action</p>
+                <div class="talk-card">
+                    <h2 class="talk-title">Red Teaming from Down Under</h2>
+                    <p class="talk-speaker">Wayne Ronaldson</p>
+                    <p class="talk-description">Real-world red teaming vs penetration testing from Australia's first SEC CTF competitor. Learn about long-term adversary simulation, supply chain attacks, executive profiling, and holistic organizational assessment from a seasoned professional.</p>
+                    <a href="talks/02/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">The SE Podcast Live: Trust & Behavior Prediction</h2>
+                    <p class="talk-speaker">Robin Dreeke</p>
+                    <p class="talk-description">10th anniversary podcast with former FBI behavioral expert discussing the evolution from rapport building to trust development to behavior prediction. Learn practical frameworks for digital trust building and ethical social engineering practices.</p>
+                    <a href="talks/03/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">OSINT in the Real World</h2>
+                    <p class="talk-speaker">Ryan MacDougall</p>
+                    <p class="talk-description">Practical OSINT techniques for everyday life from Social-Engineer LLC's senior trainer. Learn how to apply open-source intelligence skills to vet neighbors, contractors, and build comprehensive profiles from minimal starting information.</p>
+                    <a href="talks/04/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Why Vigilantism Doesn't Work</h2>
+                    <p class="talk-speaker">Shane McCombs</p>
+                    <p class="talk-description">Analysis of why vigilante predator hunting fails and how the Innocent Lives Foundation builds ethical, systematic alternatives. Learn about the psychology of vigilantism and sustainable approaches to combating child predation.</p>
+                    <a href="talks/05/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Leveraging the Insider Threat</h2>
+                    <p class="talk-speaker">Marcus Liotta</p>
+                    <p class="talk-description">13-year systems engineer explores human psychology in security, emerging threats, and the art of being "awesome." Learn practical social engineering tactics and prevention strategies from a technology veteran.</p>
+                    <a href="talks/06/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Red Teaming Insights and Examples from Beyond</h2>
+                    <p class="talk-speaker">Micah Zenko</p>
+                    <p class="talk-description">Explore red teaming as a mindset beyond cybersecurity. Learn about cognitive biases, organizational pathologies, and historical examples of institutionalized critical thinking. Discover practical techniques for personal and organizational red teaming.</p>
+                    <a href="talks/07/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">The Aspies Guide to Social Engineering</h2>
+                    <p class="talk-speaker">Perry Carpenter</p>
+                    <p class="talk-description">A deeply personal journey of leveraging autism spectrum traits as superpowers in social engineering and security. Learn how neurodiversity can provide unique advantages in understanding human behavior, deception, and security awareness.</p>
+                    <a href="talks/08/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Hacking Your Career Thru Social Engineering</h2>
+                    <p class="talk-speaker">Rebecca Long</p>
+                    <p class="talk-description">Practical framework for using social engineering principles to advance careers, especially for minorities and introverts. Learn reconnaissance for job hunting, interview rapport building, networking strategies, and office politics navigation.</p>
+                    <a href="talks/09/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Sizing People Up</h2>
+                    <p class="talk-speaker">Robin Dreeke</p>
+                    <p class="talk-description">Former FBI behavioral analysis leader shares decades of experience in trust-building and human behavior prediction. Learn the Code of Trust framework, six signs for assessing relationships, and ethical techniques for building genuine connections.</p>
+                    <a href="talks/10/" class="btn">View Talk Notes</a>
+                </div>
+
+                <div class="talk-card">
+                    <h2 class="talk-title">Swing Away: Conquer Impostor Syndrome</h2>
+                    <p class="talk-speaker">Billy Boatright</p>
+                    <p class="talk-description">Action-oriented approach to eliminating impostor syndrome through performance mindset. Learn from baseball, flair bartending, and DEF CON experiences how to embrace opportunities and overcome self-doubt in security careers.</p>
+                    <a href="talks/11/" class="btn">View Talk Notes</a>
+                </div>
+            </div>
         </div>
         
-        <div class="section">
-            <h2>The Core Philosophy: Swing Away</h2>
-            <p>Billy Boatright presents a powerful, action-oriented approach to conquering impostor syndrome by focusing on performance rather than perfection.</p>
-            
-            <div class="key-point">
-                <strong>Life-Changing Quote:</strong> "If you're good enough to have a bat in your hands, you're good enough to swing it." - Babe Ruth (from a baseball card that changed Billy's life)
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Psychological Insights</h3>
+                <p>Understand the cognitive biases and psychological principles that make social engineering effective.</p>
             </div>
             
-            <h3>Impostor Phenomenon vs Syndrome:</h3>
-            <ul>
-                <li>First introduced in 1978 by doctors Pauline Clance and Suzanne Imes as "impostor phenomenon"</li>
-                <li>Experience of self-perceived intellectual phoniness and self-doubt</li>
-                <li>Triggered by events rather than being a constant mental state</li>
-                <li>Not classified as a mental disorder, though effects can mimic depression/anxiety</li>
-                <li>Nearly 70% of people experience symptoms according to research</li>
-            </ul>
-
-            <div class="quote-box">
-                "This talk isn't about how to handle impostor syndrome or deal with it - it's how to conquer it and eliminate it."
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">Defensive Strategies</h3>
+                <p>Learn practical techniques to recognize and resist social engineering attacks in various contexts.</p>
             </div>
-        </div>
-
-        <div class="section">
-            <h2>The Origin Story: Three Transformative Experiences</h2>
             
-            <div class="story-timeline">
-                <div class="story-item">
-                    <h4>1989: Baseball Failure to Success</h4>
-                    <ul>
-                        <li>10-year-old Billy had a .000 batting average - afraid to swing</li>
-                        <li>Baseball card with Babe Ruth quote: "If you're good enough to have a bat in your hands, you're good enough to swing it"</li>
-                        <li>Transformed mindset: "I was put in a position to perform, so I might as well perform"</li>
-                        <li>Used the 17-word mantra before every at-bat for the next decade</li>
-                        <li>Sports perspective: Even at his best, successful only 40% of the time</li>
-                    </ul>
-                </div>
-
-                <div class="story-item">
-                    <h4>2001: Flair Bartending Audition</h4>
-                    <ul>
-                        <li>Auditioning at Caesar's Palace against world champion Christian Delpesci</li>
-                        <li>"His C-game beats my A-game" - vastly outmatched in skill</li>
-                        <li>Mindset: "They called me for the audition, so I might as well perform"</li>
-                        <li>Result: Got the job despite not being the best in the room</li>
-                        <li>Key insight: They wanted an entire bar staff, not just one person</li>
-                    </ul>
-                </div>
-
-                <div class="story-item">
-                    <h4>DEF CON 19: SEC CTF Competition</h4>
-                    <ul>
-                        <li>Still a bartender when selected for Social Engineering Capture the Flag</li>
-                        <li>Applied the same mindset: "Chris selected me, so I might as well perform"</li>
-                        <li>Admitted terrible strategy: tried to get every flag instead of playing strategically</li>
-                        <li>Demonstrated that being selected means you're qualified to try</li>
-                        <li>Proved that performance matters more than perfection</li>
-                    </ul>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3 class="feature-title">Real-World Examples</h3>
+                <p>Explore case studies and demonstrations from experienced security professionals and researchers.</p>
             </div>
-        </div>
-
-        <div class="section">
-            <h2>The Hero Worship Problem in Cybersecurity</h2>
-            
-            <div class="key-point">
-                <strong>Modern Challenge:</strong> "In the age of social media, we're given unprecedented access to people's lives. Because of this access, we think we know people better. This access is just an illusion because it's so controlled and filtered."
-            </div>
-
-            <h3>The Illusion of Social Media Access:</h3>
-            <div class="hero-worship-grid">
-                <div class="worship-card">
-                    <h4>Controlled Narratives</h4>
-                    <p>Billy's surgery tweets show only the positive outcome ("still undefeated"), hiding the difficult recovery process</p>
-                </div>
-                
-                <div class="worship-card">
-                    <h4>Filtered Reality</h4>
-                    <p>Social media presents curated highlights, not the full human experience with struggles and failures</p>
-                </div>
-                
-                <div class="worship-card">
-                    <h4>Daniel Boorstin's Insight</h4>
-                    <p>1962 observation: "We lose sight of the men and women who do not simply seem great because they are famous but are famous because they are great."</p>
-                </div>
-            </div>
-
-            <h3>Billy's "Social Engineering Top 7":</h3>
-            <div class="technique-grid">
-                <div class="technique-card">
-                    <h4>Role Models, Not Heroes</h4>
-                    <p>Chris Hadnagy, Rachel Tobac, Jayson Street, Michele Fincher, TrustedSec, Jack Rhysider, Jake Krebbs</p>
-                </div>
-                
-                <div class="technique-card">
-                    <h4>Selection Criteria</h4>
-                    <p>Chosen for marketing, self-promotion, book sales, TV shows, podcasts, conference talks - professional achievements</p>
-                </div>
-                
-                <div class="technique-card">
-                    <h4>Healthy Perspective</h4>
-                    <p>"Their successes drive me to be better. I understand their greatness was not bestowed - everything they've achieved they've earned."</p>
-                </div>
-            </div>
-
-            <div class="offensive-point">
-                <strong>Critical Distinction:</strong> "I'm not an impostor because I'm not as good as I think they are. I may never be able to walk through walls like Jayson Street or code like Jake Krebbs, but none of that will stop me from performing when it's my time to perform."
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Practical Applications in Security Contexts</h2>
-            
-            <h3>SEC CTF Subjectivity:</h3>
-            <div class="technique-grid">
-                <div class="technique-card">
-                    <h4>Variable Human Susceptibility</h4>
-                    <p>People's vulnerability to social engineering changes minute-to-minute based on circumstances and mental state</p>
-                </div>
-                
-                <div class="technique-card">
-                    <h4>Success Redefined</h4>
-                    <p>Who's more successful: person getting 10 URL visits (high points) or hitting every flag? Both have value in different contexts</p>
-                </div>
-                
-                <div class="technique-card">
-                    <h4>Real-World Impact</h4>
-                    <p>In actual security, getting one person to visit a URL could compromise an entire company - success isn't always about quantity</p>
-                </div>
-            </div>
-
-            <h3>CFP (Call for Papers) Mindset:</h3>
-            <div class="key-point">
-                <strong>Speaker Impostor Syndrome:</strong> "I'm speaking at DEF CON and I can't believe they picked me. I'm such a fraud." Response: "No you're not. You submitted a CFP, the committee was intrigued, they selected you."
-            </div>
-
-            <div class="quote-box">
-                "If you're good enough to be on that stage, you're good enough to give your talk. Period. End of story. They want you there."
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Actionable Strategies to Conquer Impostor Syndrome</h2>
-            
-            <div class="takeaway-grid">
-                <div class="takeaway-card">
-                    <h4>Swing Away Mentality</h4>
-                    <p>Apply Babe Ruth's wisdom: If you're in a position to perform, you're qualified to perform. Success rates don't define your right to try.</p>
-                </div>
-                
-                <div class="takeaway-card">
-                    <h4>Avoid Hero Worship</h4>
-                    <p>Have role models and idols, but don't worship them. Let their success drive you to work harder without comparing yourself unfairly.</p>
-                </div>
-                
-                <div class="takeaway-card">
-                    <h4>Get Involved</h4>
-                    <p>Billy's first DEF CONs were quiet. Find where your skills fit - villages, CTFs, volunteering, local BSides. Action beats hesitation.</p>
-                </div>
-                
-                <div class="takeaway-card">
-                    <h4>External Power Sources</h4>
-                    <p>Use music (Billy's 4-song pre-talk playlist), motivational techniques, or quick pick-me-ups to override self-doubt in the moment.</p>
-                </div>
-                
-                <div class="takeaway-card">
-                    <h4>Positive Initial Response</h4>
-                    <p>Let your first reaction to opportunities be to outperform feelings of self-doubt rather than succumb to them.</p>
-                </div>
-                
-                <div class="takeaway-card">
-                    <h4>Take Classes & Build Community</h4>
-                    <p>Billy gained 25 lasting friendships from Chris Hadnagy's Black Hat class. Shared learning creates support networks.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Specific DEF CON Engagement Opportunities</h2>
-            
-            <div class="strategy-grid">
-                <div class="strategy-card">
-                    <h4>Mission Impossible</h4>
-                    <p>Sign up for challenges that push your boundaries in a supportive environment</p>
-                </div>
-                
-                <div class="strategy-card">
-                    <h4>SEC CTF Participation</h4>
-                    <p>Apply when submissions open - selection means the organizers believe in your potential</p>
-                </div>
-                
-                <div class="strategy-card">
-                    <h4>Village Volunteering</h4>
-                    <p>Find your niche among the growing number of specialized villages at DEF CON</p>
-                </div>
-                
-                <div class="strategy-card">
-                    <h4>Local BSides Events</h4>
-                    <p>Start with smaller, local security conferences to build confidence and experience</p>
-                </div>
-            </div>
-
-            <div class="key-point">
-                <strong>Performance Over Perfection:</strong> "You might not always be successful, but you're good enough to perform. Sports taught me that even at my best, I was only successful 40% of the time. The real world is even more subjective - embrace the attempt."
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Key Takeaways & Final Wisdom</h2>
-            
-            <h3>Essential Mindset Shifts:</h3>
-            <ol>
-                <li>Selection equals qualification - if you're chosen for an opportunity, you deserve to be there</li>
-                <li>Performance matters more than perfection - taking action beats perfect inaction</li>
-                <li>Social media presents illusions - don't compare your reality to others' highlights</li>
-                <li>Have role models, not heroes - admire skills without worshipping people</li>
-                <li>Embrace subjective success - different contexts require different measures of achievement</li>
-                <li>Build external support systems - music, communities, and rituals that boost confidence</li>
-            </ol>
-
-            <div class="key-point">
-                <strong>Core Message:</strong> "If you're good enough to be in a position to perform some task - speaking, teaching, writing, pen testing, podcasting, whatever your current task is - you're good enough to do it. You might not always be successful, but you're good enough to perform."
-            </div>
-
-            <h3>Billy's Pre-Talk Playlist (for external power):</h3>
-            <ul>
-                <li>Badge of Pride - Pennywise</li>
-                <li>The Warrior's Code - Dropkick Murphys</li>
-                <li>Tougher Than Leather - Run DMC</li>
-                <li>All Original - Bone Thugs-n-Harmony</li>
-            </ul>
-
-            <div class="quote-box">
-                "Let your initial response be to just outperform those feelings of self-doubt. Conquer impostor syndrome through action, not analysis."
-            </div>
-        </div>
-
-        <div class="nav-buttons">
-            <a href="../.." class="nav-btn">← Back to Home</a>
-            <a href="../10" class="nav-btn">← Previous Talk</a>
-            <a href="../12" class="nav-btn disabled">Next Talk →</a>
         </div>
     </div>
     
     <footer>
         <div class="container">
-            <p>DEF CON 27 Social Engineering Village | Billy Boatright Impostor Syndrome Notes</p>
-            <p>Compiled by Aryan Giri | Educational purposes only</p>
+            <p>DEF CON 27 Social Engineering Village Notes | Educational Resource</p>
+            <p>This content is for educational and awareness purposes only.</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">DEF CON Official Site</a>
+            </div>
         </div>
     </footer>
 
