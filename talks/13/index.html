@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .cold-reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .cold-reading-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+
+        .cold-reading-card h4 {
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .stat-grid, .lesson-grid, .cold-reading-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Chris Kirsch - Psychic Cold Reading Techniques</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../12" class="nav-btn">← Previous Talk</a>
+            <a href="../14" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Chris Kirsch, Product Marketer & DEF CON 25 Social Engineering CTF Black Badge Winner</p>
+            <p><strong>Background:</strong> 22 years in InfoSec product marketing (PGP, Rapid7/Metasploit, Veracode), SE CTF competitor</p>
+            <p><strong>Key Focus:</strong> Applying psychic cold reading techniques to social engineering for better target assessment and pretext development</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Transformation: From Zero Points to Black Badge</h2>
+            <p>Chris Kirsch's journey in social engineering began with a humbling DEF CON 24 SE CTF performance, scoring zero points. Determined to improve, he returned at DEF CON 25 with refined techniques that earned him a prestigious black badge.</p>
+            
+            <div class="key-point">
+                <strong>Red Team Mindset:</strong> "He came back and DEFCON 25 and owned it to the point of a black badge... to go from like zero points to black badge worthy competition that's really impressive."
+            </div>
+            
+            <h3>The Learning Process:</h3>
+            <ul>
+                <li>Analyzed failure points from initial competition</li>
+                <li>Studied and implemented cold reading techniques</li>
+                <li>Applied methods in corporate hackathon setting for practice</li>
+                <li>Developed systematic approach to target assessment</li>
+                <li>Created transferable framework for social engineering operations</li>
+            </ul>
+
+            <div class="quote-box">
+                "At that black badge he used a number of tactics that I stole from him and still used to this day in our company."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Understanding Cold Reading: The Foundation</h2>
+            
+            <div class="cold-reading-grid">
+                <div class="cold-reading-card">
+                    <h4>Cold Reading Definition</h4>
+                    <p>Conning people into believing you have psychic powers through observation, probability, and psychological techniques. Used by fortune tellers, tarot readers, palm readers, and spiritual mediums.</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Different from Mentalism</h4>
+                    <p>Mentalism is performance art where practitioners don't claim actual psychic powers. Cold reading practitioners genuinely convince targets of their supernatural abilities.</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Warm Reading</h4>
+                    <p>Using OSINT (Open Source Intelligence) to gather information about targets beforehand to make readings more accurate and convincing.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Practical Application:</strong> "I did psychic readings at work... offered people free psychic readings talking about their career health ambition relationship money past present and future... I did about eight readings in two days - it's a lot more exhausting than I thought."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Cold Reading Setup: Creating Credibility</h2>
+            
+            <h3>The Pretext Framework:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Astrological Chart Ruse</h4>
+                    <p>Used printed astrological chart with instructions: write date of birth, close eyes and draw lines, trace left hand, put initials of important person. Creates false sense of legitimate methodology.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Authority Establishment</h4>
+                    <p>"When I see things I can't quite steer what I see in the reading... what I see is not always entirely clear to me so I need your help interpreting it." Sets expectation of collaboration and ambiguity.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Target Classification</h4>
+                    <p>Categorize targets as skeptics, maybes, or believers. Maybes are easiest to convince, believers fall into two categories: complete acceptance or experienced skepticism.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Social Engineering Lesson #1:</strong> "No matter how bad your pretext, sell it right and sell it with conviction... channel the people that ran the fire festival because while they didn't run a very good festival, they did sell it with conviction."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Rainbow Ruses: The Art of Self-Selection</h2>
+            
+            <div class="cold-reading-grid">
+                <div class="cold-reading-card">
+                    <h4>Rainbow Ruse Definition</h4>
+                    <p>Presenting two opposite options and letting the target self-select which applies to them. Works even without knowing the outcome in advance.</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Corporate Communications Example</h4>
+                    <p>Target in black hoodie with tattoos working in corporate communications: "There are some people who need rules in their lives to function and others that are more of a free spirit. I get the sense that you are more of a free thinker but didn't stick to the rules in your job when you have to write."</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Sales Professional Example</h4>
+                    <p>"You're comfortable assessing and accepting risk in your life... however when you think about other people in your family and social circles, you are more comfortable with risk than most others."</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Software Engineer Example</h4>
+                    <p>"Some people prefer to hash things out in conversations but I get the sense that you find these tedious and unproductive. While you will get input from others, you'd much rather read up on a topic and find some peace and quiet and figure things out for yourself."</p>
+                </div>
+            </div>
+
+            <h3>Social Cues for Assessment:</h3>
+            <ul>
+                <li><strong>Clothing and haircut:</strong> Expensive brands, sports clothing, message t-shirts</li>
+                <li><strong>Watches and jewelry:</strong> Status symbols (Rolex), charity bracelets</li>
+                <li><strong>Body language:</strong> Open/closed posture, confidence indicators</li>
+                <li><strong>Facial features:</strong> Laugh lines vs frown lines, fitness level</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>Social Engineering Application:</strong> "Phrase it as a statement rather than a question to show more authority and more knowledge... Instead of saying 'are you having any connectivity issues' you would say 'we are having connectivity issues at your site that are likely affecting you.'"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Probability Manipulation: Playing the Odds</h2>
+            
+            <h3>Name Probability Technique:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Common Name Database</h4>
+                    <p>Researched most common first names by gender from 1960s-2000s. Uses target's gender and approximate age to make educated guesses about important people in their life.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Implementation Example</h4>
+                    <p>"I get a strong sense of someone significant in your life... I see a name starting with J... someone you know well haven't been in touch with for a while... I see a Jess or Jessica or maybe a Jen or Jennifer."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Fallback Strategy</h4>
+                    <p>If completely wrong: "I'm getting the sense that this person is really impactful to your life so if they haven't come along yet then just make sure you watch out for them." Always have multiple outs.</p>
+                </div>
+            </div>
+
+            <h3>Barnum Statements: The Unexpectedly Common</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Childhood Water Accidents</h4>
+                    <p>"I see something probably in your childhood an accident involving water." Could be bathtub, pool, lake, ocean, slipping on ice, skiing accident. Had 50% hit rate, often traumatic enough to be memorable.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>House Number with Digit 2</h4>
+                    <p>"I'm seeing a house... I see the digit 2." Most streets have numbers in the 20s, and people have lived in multiple houses with friends and family. High probability of hitting relevant location.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Cloud Hosting Costs</h4>
+                    <p>Social engineering application: "Our cloud hosting bills are much higher than expected." Common issue when companies move to AWS/Azure/Google Cloud that people don't perceive as common.</p>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                "Use probabilities to shape your pretext... if you are doing research on a company you can't quite figure out what CRM they're using... go to Gartner Magic Quadrant or market share data and you'll find Salesforce.com is the market leader... make a bet on that being true."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Effectiveness Metrics & Validation</h2>
+            
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <h4>Net Promoter Score</h4>
+                    <p>62% gave ratings of 7-10 (promoters) for psychic reading quality at corporate hackathon</p>
+                </div>
+                
+                <div class="stat-card">
+                    <h4>Accuracy Perception</h4>
+                    <p>Only one person reported less than 50% accuracy, others reported 60-100% of statements on target</p>
+                </div>
+                
+                <div class="stat-card">
+                    <h4>Name Probability Success</h4>
+                    <p>Approximately 50% hit rate for name-based probability statements</p>
+                </div>
+                
+                <div class="stat-card">
+                    <h4>Water Accident Success</h4>
+                    <p>Approximately 50% hit rate for childhood water accident statements</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Memory Manipulation:</strong> "In the end of the reading I would summarize all the things that were hits but left out all the things that I got wrong... you want to change their memory and kind of implant what you got right so that it's more impressive when you summarize it in one go."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Practical Red Team Applications</h2>
+            
+            <h3>Social Engineering Integration:</h3>
+            <div class="cold-reading-grid">
+                <div class="cold-reading-card">
+                    <h4>Target Assessment Framework</h4>
+                    <p>Use rainbow ruses and social cues to quickly assess target personality, technical level, and vulnerability to different approaches during initial engagement.</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Pretext Authority Enhancement</h4>
+                    <p>Make statements rather than asking questions to establish authority. "We are having connectivity issues at your site" vs "Are you having connectivity issues?"</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Making Targets Do the Work</h4>
+                    <p>"One of your colleagues asked me to fix the projector cables... he's about this height, short brown hair..." Let target fill in details and convince themselves.</p>
+                </div>
+                
+                <div class="cold-reading-card">
+                    <h4>Industry Common Knowledge</h4>
+                    <p>Use commonly known but not commonly perceived facts (like cloud cost overruns) to establish insider credibility quickly.</p>
+                </div>
+            </div>
+
+            <h3>Button-Pushing Scenario Examples:</h3>
+            <ul>
+                <li><strong>Earthy, empathetic target:</strong> "I feel that we should press that button... that's what the others would want us to do as well. I want to make sure that we do what they need from us."</li>
+                <li><strong>Authoritative, ex-military target:</strong> "Standard operating procedure is that we press this button to ensure that the business keeps on running. Can I count on you to press that button?"</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Technical Assessment Technique:</strong> "Hey I'd love to help you and walk you through but just so I know kind of how to interact with you, would you say that you're a regular Microsoft Office user or do you sometimes go into the advanced settings or even drop down to the command line to do stuff?"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Ethical Guidelines & Professional Boundaries</h2>
+            
+            <h3>Cold Reading Ethics:</h3>
+            <ol>
+                <li><strong>Don't channel the dead</strong> - Avoid pretending to contact deceased relatives</li>
+                <li><strong>Don't discuss health issues</strong> - Medical predictions can cause real harm</li>
+                <li><strong>Don't blame the victims</strong> - People seeking psychics often do so from genuine emotional need</li>
+                <li><strong>Always debrief participants</strong> - Explain techniques used to educate rather than deceive</li>
+                <li><strong>Use for education, not exploitation</strong> - Focus on awareness rather than personal gain</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Empathetic Approach:</strong> "I met several people that are going to psychics and they are doing it because they lost a spouse and they're trying to connect and heal... in those situations be empathetic and try to educate them... make sure they don't get financially exploited."
+            </div>
+
+            <h3>Recommended Training Resources:</h3>
+            <ul>
+                <li><strong>Ian Rowland's "The Full Facts Book of Cold Reading"</strong> - Comprehensive cold reading techniques</li>
+                <li><strong>Paul Ekman Microexpression Training</strong> - $99 bundle for recognizing subtle facial cues</li>
+                <li><strong>Emotions Connection iPhone App</strong> - $5 microexpression recognition practice</li>
+                <li><strong>Social Engineering Podcast Episode 109</strong> - Interview with cold reading expert</li>
+                <li><strong>SE Village Orlando Conference</strong> - Ian Rowland cold reading training in February</li>
+            </ul>
+
+            <div class="quote-box">
+                "Please use cold reading for good... educate your friends and family about cold reading and those techniques and how they work and use it for ethical purposes and not for personal gain."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Red Teams</h2>
+            
+            <h3>Essential Cold Reading Techniques:</h3>
+            <ol>
+                <li><strong>Sell your pretext with conviction</strong> - Confidence often matters more than content</li>
+                <li><strong>Use rainbow ruses for quick assessment</strong> - Let targets self-identify their characteristics</li>
+                <li><strong>Leverage probability and common knowledge</strong> - Use statistical likelihoods to appear insightful</li>
+                <li><strong>Make statements, not questions</strong> - Establish authority through declarative language</li>
+                <li><strong>Always have multiple outs</strong> - Prepare fallback explanations for incorrect assumptions</li>
+                <li><strong>Summarize hits, omit misses</strong> - Shape target memory to emphasize successful insights</li>
+                <li><strong>Read social cues systematically</strong> - Clothing, body language, accessories reveal personality</li>
+                <li><strong>Make targets do the work</strong> - Provide vague prompts that encourage target elaboration</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Professional Application:</strong> "Use common facts to come off as an insider... things that people think are not that obvious but are actually fairly obvious... create credibility with shared understanding of industry challenges."
+            </div>
+
+            <h3>Defensive Awareness Points:</h3>
+            <ul>
+                <li>Be aware of rainbow ruse techniques in social engineering attempts</li>
+                <li>Question authority figures who make broad statements without evidence</li>
+                <li>Recognize when you're being prompted to fill in details</li>
+                <li>Understand that high-probability guesses can appear insightful</li>
+                <li>Maintain skepticism about "insider knowledge" that relies on common industry issues</li>
+            </ul>
+
+            <div class="quote-box">
+                "The competition was born at the biggest hacker convention with the most volatile network on planet Earth, but with a goal to show how social engineering was dangerous and still a very viable vector, but if we can change it, it can change your life for the better if you allow it."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../12" class="nav-btn">← Previous Talk</a>
+            <a href="../14" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Chris Kirsch Psychic Cold Reading Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
