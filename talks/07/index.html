@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .stat-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border-top: 3px solid var(--highlight);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .bias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .bias-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #FFC107;
+        }
+
+        .historical-example {
+            background: rgba(15, 52, 96, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .practice-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .practice-card.effective {
+            border-top: 3px solid #4CAF50;
+        }
+
+        .practice-card.ineffective {
+            border-top: 3px solid #f44336;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .bias-grid, .practice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Micah Zenko - Red Teaming Insights and Examples from Beyond</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../06" class="nav-btn">← Previous Talk</a>
+            <a href="../08" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Micah  Zenko, Consultant & National Security Expert</p>
+            <p><strong>Background:</strong> PhD in Political Science, former positions at Harvard and Council on Foreign Relations, columnist at Foreign Policy</p>
+            <p><strong>Key Focus:</strong> Red teaming as a mindset and methodology beyond cybersecurity</p>
+        </div>
+        
+        <div class="section">
+            <h2>Red Teaming: Beyond Cybersecurity</h2>
+            <p>Micah Zenko presents a unique perspective on red teaming that extends far beyond traditional cybersecurity applications, framing it as a fundamental mindset and approach to critical thinking.</p>
+            
+            <div class="key-point">
+                <strong>Core Definition:</strong> "Red teaming to me is really a mindset. It's an approach and a series of techniques. It's not a cyber thing."
+            </div>
+            
+            <h3>Speaker Background:</h3>
+            <ul>
+                <li>Works at 120-person consulting firm outside DC focusing on change management and leadership development</li>
+                <li>Extensive national security writing background at Harvard and Council on Foreign Relations</li>
+                <li>PhD in political science, bartending license, but "zero certifications" in cybersecurity</li>
+                <li>Author of multiple books including recent work on avoiding fear-mongering by leaders</li>
+                <li>Self-described "imposter in the hacker world"</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>The Problem: Why We Can't Think Critically</h2>
+            
+            <div class="quote-box">
+                "Think about what you do each day. Nobody decides then and there what to do at 9:00 a.m. each day. You have a series of expected dress, expected rituals, norms and cultures. Over time, all of these behaviors shape and limit the way you think."
+            </div>
+
+            <h3>The De-skilling of Workers:</h3>
+            <p>Zenko references Thorstein Veblen's observation about the transition from agricultural/craft work to manufacturing:</p>
+            <ul>
+                <li>Historical goal was to "de-skill the American human"</li>
+                <li>Make tasks easy, replicable, repeatable, and teachable</li>
+                <li>Break work down into component parts to avoid critical thinking</li>
+                <li>Frederick Wilson Taylor and Henry Ford as "perfectors" of this system</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>CIA Example:</strong> A deputy director of intelligence described how she "became a CIA analyst" when turning into the wooded lot at Langley, stopping her free thinking. This demonstrates how organizational environments shape and limit thinking.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Why Red Teaming is Necessary</h2>
+            
+            <div class="key-point">
+                <strong>Fundamental Principle:</strong> "You can't grade your own homework. Organizations are systematically incapable of identifying their blind spots and challenging their assumptions."
+            </div>
+
+            <h3>Two Core Reasons for Red Teaming:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>What's Between Our Ears</h4>
+                    <p>Cognitive biases and mental shortcuts that prevent objective self-evaluation</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>What's Between All of Us</h4>
+                    <p>Organizational pathologies that inhibit critical thinking and dissent</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Cognitive Biases: The Individual Barriers</h2>
+            
+            <h3>Status Quo Bias - The QWERTY Example:</h3>
+            <div class="historical-example">
+                <h4>The QWERTY Keyboard Legacy:</h4>
+                <ul>
+                    <li>Invented by Christopher Latham Sholes in Milwaukee as a typesetting solution</li>
+                    <li>Sold to Remington rifle company in 1870</li>
+                    <li>No technical reason for QWERTY dominance - takes 3-4 days to train out of it</li>
+                    <li>People could type 30-40% faster with alternative layouts</li>
+                    <li>Demonstrates how we accept inefficient systems as "morally correct"</li>
+                </ul>
+            </div>
+
+            <h3>Blind Spot Bias - The Meta Bias:</h3>
+            <div class="key-point">
+                <strong>Research Finding:</strong> In a study of 7,700 Americans taking cognitive bias tests, only 1 in 7,700 said they were more biased than average. 85% thought they were less biased than others.
+            </div>
+
+            <p><strong>Doctor Example:</strong> 20% of doctors admit being influenced by pharmaceutical gifts, but estimate 80% of their peers are influenced.</p>
+        </div>
+
+        <div class="section">
+            <h2>Organizational Pathologies</h2>
+            
+            <div class="bias-grid">
+                <div class="bias-card">
+                    <h4>Groupthink</h4>
+                    <p>Illusion of unanimity where people don't express what they actually believe to maintain unit cohesion and morale</p>
+                </div>
+                
+                <div class="bias-card">
+                    <h4>Hierarchy Problems</h4>
+                    <p>Leaders believe their doors are always open, but people don't voice dissent because they think it's pointless</p>
+                </div>
+                
+                <div class="bias-card">
+                    <h4>Voicing Sideways</h4>
+                    <p>When people stop giving feedback upward and instead gossip with coworkers</p>
+                </div>
+                
+                <div class="bias-card">
+                    <h4>Maverick Hunting</h4>
+                    <p>Organizations systematically "hunt down and kill" mavericks who challenge conventional wisdom</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Cultural Impact:</strong> "You can have the best strategies, plans, processes, and people - if you have the wrong culture, it destroys them. Culture is harder to measure because it's in the walls of where we work."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Historical Examples of Red Teaming</h2>
+            
+            <div class="historical-example">
+                <h4>The Devil's Advocate (1230-1982)</h4>
+                <ul>
+                    <li>First institutionalized red team in the Catholic Church</li>
+                    <li>Position created to find disconfirming information about saint nominations</li>
+                    <li>Eliminated by Pope John Paul II in 1982</li>
+                    <li>Result: More people canonized in next 25 years than previous 1,900 years</li>
+                    <li>Pope John Paul II himself canonized just 12 years after death</li>
+                </ul>
+            </div>
+
+            <div class="historical-example">
+                <h4>Modern Red Teaming Origins (1950s)</h4>
+                <ul>
+                    <li>Started at RAND Corporation in Santa Monica</li>
+                    <li>"Red" referred to Soviet Red Army</li>
+                    <li>Modeled NATO vs. Soviet strategic interactions</li>
+                    <li>Foundations in brainstorming, behavioral sciences, game theory, and organizational theory</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Types of Red Teaming</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Simulations</h4>
+                    <p>Testing plans and strategies by envisioning failure scenarios. Used with large banks for data breach response planning involving entire C-suite and board.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Alternative Analysis</h4>
+                    <p>Series of techniques to challenge assumptions. Reference: US Army Red Team Handbook Volume 9.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Red Team Quadrant:</strong> Easiest = adversarial operational (how bad guys break in). Hardest = your own ideas and thinking (pentesting your thinking).
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Real-World Case Study: Healthcare Rounding Strategy</h2>
+            
+            <div class="case-study">
+                <h4>Situation:</h4>
+                <ul>
+                    <li>100 chief nursing officers at major healthcare company</li>
+                    <li>Rounding strategy (team-based patient care) had failed</li>
+                    <li>Doctors systematically didn't show up for rounds</li>
+                    <li>Nurses primed to blame doctors for all problems</li>
+                </ul>
+
+                <h4>Red Team Intervention:</h4>
+                <ul>
+                    <li>Pre-mortem analysis: Imagine strategy failed completely in one year</li>
+                    <li>Constraint: Couldn't blame the doctors</li>
+                    <li>Result: Identified real underlying issues</li>
+                </ul>
+
+                <h4>Discoveries & Solutions:</h4>
+                <ul>
+                    <li>No common training standard → Implemented standardized training</li>
+                    <li>High nurse turnover → Raised pay to reduce attrition</li>
+                    <li>No family engagement → Set up 24-hour text notification system</li>
+                </ul>
+
+                <h4>Outcome:</h4>
+                <p>Within 3-4 months, significant improvements in patient satisfaction metrics.</p>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Facilitator Role:</strong> "I'm a disinterested outside facilitator with no vested interest in outcomes. I'm just good at facilitation and changed how they thought about the problem."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Red Teaming Best Practices</h2>
+            
+            <div class="practice-grid">
+                <div class="practice-card effective">
+                    <h4>Senior Leadership Buy-in</h4>
+                    <p>If the boss doesn't care, resource, authorize access, and act on findings, nothing else matters</p>
+                </div>
+                
+                <div class="practice-card effective">
+                    <h4>Act on Findings</h4>
+                    <p>Doing red teaming and ignoring results is worse than not doing it at all - signals dissent isn't welcome</p>
+                </div>
+                
+                <div class="practice-card effective">
+                    <h4>Pre-engagement Preparation</h4>
+                    <p>Spend weeks interviewing participants, sending preparatory emails, addressing concerns in advance</p>
+                </div>
+                
+                <div class="practice-card ineffective">
+                    <h4>Maverick Approach</h4>
+                    <p>Individual mavericks are systematically hunted down in organizations - exhausting and ineffective</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Leadership Therapy:</strong> "The first act of red teaming is really therapy with senior leaders - what do you think you care about most? They don't actually know what they care about most."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Becoming a Personal Red Teamer</h2>
+            
+            <h3>Three Essential Practices:</h3>
+            
+            <div class="technique-card">
+                <h4>1. Recognize and Mitigate Biases</h4>
+                <p>Bookmark Wikipedia's list of 100+ cognitive biases. Before consequential decisions, review and identify which biases might be affecting your judgment.</p>
+            </div>
+
+            <div class="technique-card">
+                <h4>2. Read Outside Your Interests</h4>
+                <p>Average person visits 10-12 websites daily with almost no monthly variation. Reading within your field is maintenance, not critical thinking.</p>
+                
+                <div class="key-point">
+                    <strong>Zenko's Rotation:</strong> Rotates 8 outside interest areas yearly (history, sociology, behavioral sciences, scientific interests)
+                </div>
+            </div>
+
+            <div class="technique-card">
+                <h4>3. Effective Voicing and Receiving</h4>
+                <p>Learn to voice concerns effectively and as leaders, learn to receive feedback properly.</p>
+                
+                <h5>Power Cues That Inhibit Voice:</h5>
+                <ul>
+                    <li>Being overly well-dressed</li>
+                    <li>Cold office settings</li>
+                    <li>Intimidating social media profiles (e.g., free climbing El Capitan)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Creativity and Innovation Through Red Teaming</h2>
+            
+            <h3>Creating Adjacencies for Better Thinking:</h3>
+            
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <h4>Physical Removal</h4>
+                    <p>You can't think outside the box while sitting at your desk. Physically remove yourself from your work environment daily.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h4>Moments of Transition</h4>
+                    <p>Highest creativity occurs during transitions (walking, jogging, incidental conversations) not during focused work</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h4>Incubation Effects</h4>
+                    <p>Immerse in problem details, then step away. The deeper the immersion, the more anchored you become - requires forgetting to gain novel perspectives.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Research Basis:</strong> University of Chicago's Mihaly Csikszentmihalyi documented that peak creative performance happens during transitional moments, not focused work sessions.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Q&A Insights</h2>
+            
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Giving Criticism</h4>
+                    <p>Research shows people receive criticism better from peers than senior leaders. Criticism should be direct, actionable, and delivered by someone at their level.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Building Buy-in</h4>
+                    <p>Spend 6+ weeks pre-gaming with participants, addressing concerns, ensuring everyone understands the purpose and value.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Multidisciplinary Teams</h4>
+                    <p>"Tyranny of expertise" means technical experts become too immersed in their field to see discontinuities. Need diverse perspectives including non-experts.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways</h2>
+            
+            <h3>Essential Red Teaming Principles:</h3>
+            <ol>
+                <li>Red teaming is fundamentally a mindset, not just a cybersecurity technique</li>
+                <li>Organizations and individuals are systematically incapable of objective self-evaluation</li>
+                <li>Cognitive biases and organizational pathologies prevent critical thinking</li>
+                <li>Successful red teaming requires senior leadership commitment and action on findings</li>
+                <li>Personal red teaming involves recognizing biases, seeking diverse perspectives, and creating thinking adjacencies</li>
+                <li>Creativity flourishes during transitions and incubation periods, not focused work sessions</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Thought:</strong> "The surest way to make nobody ask a question is to say 'if there's no questions we can all go home' - but red teaming is about always asking the hard questions, even when it's uncomfortable."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../06" class="nav-btn">← Previous Talk</a>
+            <a href="../08" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Micah Zenko Red Teaming Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
