@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .film-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .film-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+
+        .film-card h4 {
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .stat-grid, .lesson-grid, .film-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Andrew Nicholson - Hacking Hollywood</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../17" class="nav-btn">← Previous Talk</a>
+            <a href="../19" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Andrew Nicholson, Film Scout & Location Manager</p>
+            <p><strong>Background:</strong> 6+ years in Hollywood film and television production, credits include Black Lightning pilot and 2018 Dynasty reboot</p>
+            <p><strong>Key Focus:</strong> Social engineering techniques used in film scouting and set security vulnerabilities in Hollywood productions</p>
+        </div>
+        
+        <div class="section">
+            <h2>Introduction: The Film Scout's Social Engineering Playbook</h2>
+            <p>Andrew Nicholson shares his experiences as a film scout, where his job involved convincing homeowners and businesses to allow film crews of 100+ people access to their properties using sophisticated social engineering techniques.</p>
+            
+            <div class="key-point">
+                <strong>Core Challenge:</strong> "I've got maybe 30 seconds, maybe a minute at most through the door to get you disarmed and to let me inside and take some pictures. The first thing I'm gonna tell you is that I'm not here to sell you anything."
+            </div>
+            
+            <h3>Film Scout Responsibilities:</h3>
+            <ul>
+                <li>Receive scripts from producers/directors</li>
+                <li>Find suitable houses, businesses, and locations</li>
+                <li>Convince property owners to allow film crews</li>
+                <li>Manage 100+ person crews and complex logistics</li>
+                <li>Build support networks with neighbors and local officials</li>
+                <li>Secure permits and handle legal requirements</li>
+            </ul>
+
+            <div class="quote-box">
+                "For six years, my job basically consisted of getting a script from a producer or director and then going out and finding a house, business, whatever, and then convincing them to let me bring a crew of about a hundred people in there to make a TV show."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Doorstep Social Engineering Techniques</h2>
+            
+            <div class="film-grid">
+                <div class="film-card">
+                    <h4>Initial Approach Strategy</h4>
+                    <p>"I'm not here to sell you anything" - immediate disarming statement that breaks the expected salesperson script and creates curiosity.</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Information Control</h4>
+                    <p>Based on homeowner response, control what information is shared. If they've never been approached before, share only positive aspects initially.</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Objection Handling</h4>
+                    <p>If they've been approached before and said no, ask why and address specific concerns (horror films, inappropriate content, etc.).</p>
+                </div>
+            </div>
+
+            <h3>Response-Based Strategy Matrix:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Never Been Approached</h4>
+                    <p>Control information flow, emphasize benefits, delay discussing negatives. "I get to control the information that I give them and I'm going to give them information that's going to get me a yes."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Previously Said Yes</h4>
+                    <p>Leverage positive past experience. "Not a problem, we're usually good to go." Build on established trust.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Previously Said No</h4>
+                    <p>Identify and address specific objections. "I'm going to ask why. I'm going to address their apprehensions and alleviate their concerns."</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Performance Metrics:</strong> "The original team had about three months - they only found 20 houses that would agree to a film crew. My team had a month and we found 35 houses. That's how effective these techniques are."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Advanced Property Access Strategies</h2>
+            
+            <h3>When Homeowners Aren't Present:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Leave Professional Letters</h4>
+                    <p>Create official-looking letters with property details. "I'm taking a picture of their house and writing down the address so when they call me back I can be like 'Well which house was it?'"</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Act Like You're Being Watched</h4>
+                    <p>Maintain professional demeanor at all times. "You will not believe the amount of times I've left one of these letters and I'm five minutes down the road I get a phone call: 'We were watching you, you seem like a pretty honest guy.'"</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Leverage Law Enforcement</h4>
+                    <p>Use police as unwitting allies. "If I'm at someone's fence and I'm peering through and the cops pull up... I am so-and-so, I'm trying to do this, do you know how to get in touch with this person?"</p>
+                </div>
+            </div>
+
+            <h3>The Honesty Strategy:</h3>
+            <div class="quote-box">
+                "I'm going to be a hundred percent upfront with someone. I'm going to be super candid... I'm going to tell the truth so much, I'm gonna be so candid with you that when I lie you will have no reason to trust me or not to trust me... and you're also not going to have any way to verify that I'm lying."
+            </div>
+
+            <div class="key-point">
+                <strong>Strategic Truth-Telling:</strong> "I could get in a lot of trouble for telling you this, but the producers really like your house." - Using apparent confidentiality to build trust while maintaining complete control of the narrative.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Institutional Access & Bureaucratic Exploitation</h2>
+            
+            <h3>Accessing Different Types of Properties:</h3>
+            <div class="film-grid">
+                <div class="film-card">
+                    <h4>Government Buildings</h4>
+                    <p>Small towns often have minimal bureaucracy. "One town... 'you should talk to the mayor about that.' The mayor: 'Oh yeah, you guys want to come up here and film? Go for it. Do we need a permit? No, no, just come up here.'"</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Universities & Institutions</h4>
+                    <p>Identify specific gatekeepers - campus relations managers, facility coordinators. Understand institutional hierarchies and approval processes.</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Restricted Facilities</h4>
+                    <p>Former military bases, secure facilities. Guardian Center example: former secret military base with nuclear weapons, now disaster training center accessible through proper channels.</p>
+                </div>
+            </div>
+
+            <h3>Regulatory Loopholes & Creative Solutions:</h3>
+            <ul>
+                <li><strong>Asbestos Buildings:</strong> Use OSHA 10-14 day work permits for filming in otherwise unusable buildings (Stranger Things lab example)</li>
+                <li><strong>Churches & Religious Institutions:</strong> Find alignment with values (LGBTQ-friendly church for gay sex scene in Dynasty)</li>
+                <li><strong>Property Managers:</strong> Leverage financial incentives - "They can make in a matter of days what might take a month normally"</li>
+                <li><strong>Common Security Failures:</strong> Address used as gate codes, birthdays as combinations</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Guardian Center Access:</strong> "This used to be a secret military base installed around the height of the Cuban Missile Crisis with nukes on grounds... The radiation level in one bunker is still too high to let me go in, but we filmed The 5th Wave there."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Film Set Security Vulnerabilities</h2>
+            
+            <h3>Industry-Wide Security Problems:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Call Sheet Distribution</h4>
+                    <p>"Call sheets are given out like candy by PAs... I'd like to see them signed out and signed back in." Contains all information needed for pretexting.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Personal Email Usage</h4>
+                    <p>"People are used to working a job 2-3 months then moving on... using personal email for work including scripts, dailies, confidential information."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Lack of Security Training</h4>
+                    <p>"They're not getting security training, they're not getting any type of multi-factor authentication on their emails. Trust me, I've tried to talk my co-workers into this - it doesn't work."</p>
+                </div>
+            </div>
+
+            <h3>Common Intruder Types on Film Sets:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Unintentional Bogeys</h4>
+                    <p>People who accidentally get trapped on set and are too scared to leave. "Someone standing on the street watching something, next thing he knows there's a film crew around him."</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Intentional Bogeys</h4>
+                    <p>People who deliberately enter sets to see how long they can stay. "They're gonna walk right onto the film set and see how long they can stay until someone takes them off."</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Malicious Extras</h4>
+                    <p>Legitimate extras who steal from other crew members. "Take someone that makes eight-nine dollars an hour and put them in a room with 200 purses - yeah, things are gonna go bad."</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Universal Uniform Vulnerability:</strong> "A radio, a headset, and usually a fluorescent traffic vest. Unless you have specific gear that tells me if you're a grip or electrician, I'm just gonna think you're a PA or one of my people."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Social Engineering Detection & Prevention</h2>
+            
+            <h3>Identifying Suspicious Behavior:</h3>
+            <div class="film-grid">
+                <div class="film-card">
+                    <h4>Behavioral Inconsistencies</h4>
+                    <p>"Extras aren't allowed to drink coffee. If I see someone who looks like a normal person drinking coffee, it's gonna give them away." Understand role-specific privileges and restrictions.</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Wardrobe Mismatches</h4>
+                    <p>"I had someone try to sneak onto my film set wearing a bright pink shirt. The DP would never sign off on that - it throws off color temperature and camera settings."</p>
+                </div>
+                
+                <div class="film-card">
+                    <h4>Procedural Knowledge Gaps</h4>
+                    <p>"Extras aren't allowed to take bathroom breaks except at certain times, they have to be supervised. That's gonna give you away."</p>
+                </div>
+            </div>
+
+            <h3>Verification Techniques:</h3>
+            <ul>
+                <li><strong>Wardrobe Verification:</strong> "Every piece of wardrobe has to be approved by a department head. Wardrobe assistants spend 3-4 hours on garments and can instantly identify fakes."</li>
+                <li><strong>Department Cross-Checking:</strong> "I'm going to go to a wardrobe assistant instead of a PA because they know every approved costume."</li>
+                <li><strong>Role-Specific Knowledge:</strong> Understand departmental hierarchies and communication patterns to identify inconsistencies.</li>
+            </ul>
+
+            <div class="quote-box">
+                "The people you see on the film set, they're not talking to each other. They all assume that if you get onto that film set that you're supposed to be there. That's the biggest security vulnerability."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Security Improvements & Best Practices</h2>
+            
+            <h3>Implemented Security Measures:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Doubled Night Security</h4>
+                    <p>"We started doubling our security because we were finding our security guards were falling asleep. Instead, we double up now with an accountability system."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Integrated Security Positioning</h4>
+                    <p>"Put a security guard right in the middle of the set. When security works alongside crew members, they're more likely to identify and report intruders."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Dedicated Asset Protection</h4>
+                    <p>"Hire security guards purely to watch extras' equipment, purses, and bags. People want to work with us more because we have security watching out for their property."</p>
+                </div>
+            </div>
+
+            <h3>Industry-Wide Security Recommendations:</h3>
+            <ol>
+                <li><strong>Call Sheet Management:</strong> Implement sign-out/sign-in procedures for sensitive documents</li>
+                <li><strong>Email Security:</strong> Provide security training and enforce company email usage</li>
+                <li><strong>Professional Security Staff:</strong> "Don't hire PAs as security guards for $9/hour. That's how people get robbed and shot."</li>
+                <li><strong>Crew Verification:</strong> Implement dual-check systems at parking and set entry points</li>
+                <li><strong>Information Sharing:</strong> Establish industry-wide security breach reporting</li>
+                <li><strong>Custom Bracelets:</strong> Use role-specific identifiers that are harder to fake than badges</li>
+                <li><strong>Social Media Enforcement:</strong> Strictly enforce no-photo policies and location sharing restrictions</li>
+            </ol>
+
+            <div class="offensive-point">
+                <strong>Social Media Intelligence Example:</strong> "This took me about ten minutes on Instagram using common hashtags like #filmmaking, #firstdayshooting. Now I know some people that aren't going to be home for 12 hours today. Studios should really enforce their social media policies - this protects their employees who are getting robbed while working."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Security Professionals</h2>
+            
+            <h3>Essential Security Principles:</h3>
+            <ol>
+                <li><strong>Assume trust is the default</strong> - Most people assume anyone on premises belongs there</li>
+                <li><strong>Understand industry-specific vulnerabilities</strong> - Each sector has unique security blind spots</li>
+                <li><strong>Leverage bureaucratic inefficiencies</strong> - Small towns, understaffed institutions often have minimal security</li>
+                <li><strong>Use strategic honesty</strong> - Being mostly truthful makes occasional lies undetectable</li>
+                <li><strong>Exploit procedural knowledge gaps</strong> - Understand role-specific behaviors and privileges</li>
+                <li><strong>Monitor social media intelligence</strong> - Public posts reveal security vulnerabilities and patterns</li>
+                <li><strong>Implement integrated security</strong> - Security personnel working alongside staff detect anomalies better</li>
+                <li><strong>Enforce consistent policies</strong> - From call sheet management to social media usage</li>
+                <li><strong>Train for behavioral detection</strong> - Teach staff to recognize procedural and behavioral inconsistencies</li>
+                <li><strong>Share security intelligence</strong> - Industry-wide information sharing prevents repeat incidents</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Core Insight:</strong> "As a film scout, you can get into places that most people can't. That's what really attracted me to the job - it's like a dream come true for someone interested in access and social engineering. But this same access creates massive security vulnerabilities that malicious actors can exploit."
+            </div>
+
+            <h3>Red Team Applications:</h3>
+            <ul>
+                <li>Use industry-specific pretexts and uniforms for physical penetration testing</li>
+                <li>Leverage bureaucratic inefficiencies in government and institutional access</li>
+                <li>Exploit the "assumption of belonging" that occurs in large, temporary organizations</li>
+                <li>Monitor social media for operational security intelligence</li>
+                <li>Test security through role-specific behavioral inconsistencies</li>
+                <li>Identify and exploit procedural knowledge gaps in organizational security</li>
+            </ul>
+
+            <div class="quote-box">
+                "If I was still working in the industry, I would not be allowed to be up here talking about this right now. The film industry doesn't want to share information about their security faults and hazards because that's the last thing they want to do. But this information sharing is exactly what's needed to improve security across the industry."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../17" class="nav-btn">← Previous Talk</a>
+            <a href="../19" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Andrew Nicholson Hacking Hollywood Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
