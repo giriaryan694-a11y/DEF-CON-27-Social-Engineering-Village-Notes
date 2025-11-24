@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27: Shane McCombs</title>
+    <style>
+        /* * 1. CSS Variables for Theming 
+         */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-color: #d40000; /* DEF CON Red */
+            --header-sub-color: #555;
+            --code-bg-color: #eee;
+            --shadow-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme {
+            --bg-color: #2b2b2b;
+            --text-color: #f1f1f1;
+            --border-color: #555;
+            --header-color: #ff4141; /* Lighter Red for dark bg */
+            --header-sub-color: #ccc;
+            --code-bg-color: #444;
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        /* * 2. General Body Styles (using variables)
+         */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        /* * 3. Theme Toggle Button Styles
+         */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: var(--code-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* * 4. Content Styles (using variables)
+         */
+        h1 {
+            color: var(--header-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--header-sub-color);
+            font-style: italic;
+            font-weight: normal;
+            font-size: 1.2em;
+            margin-top: -10px;
+        }
+        h3 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code, pre {
+            background-color: var(--code-bg-color);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">Switch to Dark Mode</button>
+
+    <div class="container">
+        <h1>Why Vigilantism Doesn't Work</h1>
+        <h2>Shane McCombs - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+
+        <h3>Introduction: Stirring Thought, Not Debate</h3>
+        <p>
+            Shane McCombs clarifies his goal is not to start a debate about whether vigilantism is good or bad. The goal is to "get our thinking stirred up" and move people to effective action.
+        </p>
+        <ul>
+            <li>Vigilantism ("law enforcement undertaken without legal authority") appeals to our core sense of justice.</li>
+            <li>When we see an injustice, our "internal sense of justice is offended." This is the same principle as reciprocity, and it's why heroes like Batman are so successful.</li>
+        </ul>
+
+        <h3>The Core Problem: Why Vigilantes Exist</h3>
+        <ul>
+            <li><strong>The Statistic:</strong> A "realistic" and "unacceptable" statistic is that **1 in 10 children** will experience sexual abuse before their 18th birthday. He notes this is based on *reported* numbers, so the real number is "probably much higher."</li>
+            <li><strong>The Systemic Failure:</strong> When families go to the system for help, they find good people who are **"understaffed, underfunded, overworked"** and can't keep up.</li>
+            <li>This "gap" is what vigilante predator hunter groups are attempting to fill.</li>
+        </ul>
+
+        <h3>Predator Hunting 101 (The Common Vigilante Method)</h3>
+        <ol>
+            <li>Pretend to be a minor on social media.</li>
+            <li>Build a relationship with anyone who interacts (casting a "wide net").</li>
+            <li>If the relationship turns sexual, cultivate it.</li>
+            <li>Arrange an in-person meeting.</li>
+            <li>Record or livestream the confrontation, where the person is "confronted, named, shamed, humiliated."</li>
+        </ol>
+
+        <h3>The 8 Key Challenges of Vigilantism (Why It Doesn't Work)</h3>
+        <p>
+            This is the core of the argument. The vigilante method has fundamental, often counter-productive, flaws.
+        </p>
+        <ol>
+            <li><strong>Physical Safety:</strong> The confrontations are dangerous. More importantly, if the predator is shamed and *not* arrested, what might they do when they go home to a child they have access to?</li>
+            <li><strong>Failed Prosecutions (Capability):</strong> He played a clip of a lawyer stating that prosecutions **fail** because the hunters "went too far," and the court cannot prove the person would have committed the crime without the hunter's actions.</li>
+            <li><strong>Legality (Entrapment):** This is a huge legal debate that taints the cases.</li>
+            <li><strong>Police Conflicts:</strong> Law enforcement is now being told to "crack down on the vigilante hunter group." The Michigan Attorney General issued a "cease and desist" because they were **"jeopardizing police work."**</li>
+            <li><strong>Hunters Get Sued:</strong> Predators are now turning around and *suing* the hunter groups.</li>
+            <li><strong>Drains Resources:</strong> Law enforcement's already-strained resources are now split between catching the *real* criminals and managing the vigilantes.</li>
+            <li><strong>The Wrong Focus:</strong> Vigilantism focuses almost exclusively on the "stranger danger" threat. Statistics overwhelmingly show that most abuse comes from **family members and acquaintances**.</li>
+            <li><strong>Educating the Enemy:</strong> By "going full-on open kimono" and showing their methods on livestreams, they are **"teaching these guys how to avoid them"** (and law enforcement) in the future.</li>
+        </ol>
+
+        <h3>A Better Way: The Innocent Lives Foundation (ILF) Framework</h3>
+        <p>
+            Shane proposes a "different, non-vigilante framework" that is designed to specifically bypass the challenges listed above.
+        </p>
+        <ul>
+            <li><strong>Principle 1: Anonymity & No Confrontation:</strong> This is the *opposite* of the vigilante model. It eliminates the physical safety risk, removes the legal threat to the hunters, and stops them from "teaching the predators."</li>
+            <li><strong>Principle 2: Trained & Qualified Members:** Only approved team members can interact, minimizing the chance of "failure" (i.e., failed prosecutions).</li>
+            <li><strong>Principle 3: Target "Confirmed Predators":** Instead of casting a "wide net," they target those *already* "misbehaving... in public space" (breaking the law). This **"bypasses the questions of legality and entrapment."**</li>
+            <li><strong>Principle 4: Cultivate Law Enforcement (LE) Relationships:</strong> They actively partner with LE, submitting information through a "predefined and approved process." They become a force multiplier *for* the system, not an obstacle to it.</li>
+        </ul>
+
+        <h3>ILF Operations & Call to Action</h3>
+        <p>
+            The ILF is run as a non-profit business, not a vigilante group, with SOPs, a Board of Directors, and a **mandatory wellness program** because the work is so "hard" ("rolling in muck all day long").
+        </p>
+        <h4>How to Help</h4>
+        <ul>
+            <li><strong>Volunteer:</strong> The process is "ridiculously stringent" and requires intrusive background checks (criminal, financial), technical interviews, and wellness interviews.</li>
+            <li><strong>Donate:</strong> Via the website, swag, or the Squad Locker store.</li>
+            <li><strong>Use OPM (Other People's Money):**
+                <ul>
+                    <li>Set ILF as your charity on **`smile.amazon.com`**.</li>
+                    <li>Use workplace donation matching.</li>
+                    <li>Partner through Humble Bundle or as a Twitch streamer.</li>
+                </ul>
+            </li>
+            <li>Even small grassroots efforts (like a Super Bowl jar) have raised thousands.</li>
+        </ul>
+
+        <h3>Q&A Highlights</h3>
+        <ul>
+            <li><strong>Is it scalable?</strong> Yes. They are building SOPs to "stamp it out." They went from 9 cases submitted to LE last year to **63 cases** this year. "It's a little dent, but you got to start somewhere."</li>
+            <li><strong>Working with NCMEC?</strong> Not directly, but they have working relationships and are taking advice.</li>
+            <li><strong>Team Size:</strong> 26 people total (including 6 on the board and 11 in the "pit," or Predator Identification Team).</li>
+        </ul>
+    </div>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Theme Logic ---
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            setCookie('theme', newTheme, 365); // Store preference for 1 year
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Add click listener to the button
+            themeToggleButton.addEventListener('click', toggleTheme);
+
+            // 2. Apply saved theme from cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Optional: Check OS preference if no cookie
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light'); // Default
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
