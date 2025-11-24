@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .phase-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .physical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .physical-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+
+        .physical-card h4 {
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .phase-grid, .lesson-grid, .physical-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Chris Pritchard - The Basics of Social Engineering</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../13" class="nav-btn">← Previous Talk</a>
+            <a href="../15" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Chris Pritchard, Security Consultant specializing in Critical National Infrastructure</p>
+            <p><strong>Background:</strong> Extensive experience testing ICS, rail, air, maritime, utility sectors, and nuclear sites</p>
+            <p><strong>Key Focus:</strong> Practical social engineering techniques for gaining access to highly secure facilities including casinos, airports, and CNI</p>
+        </div>
+        
+        <div class="section">
+            <h2>Introduction: Breaking Into the Most Secure Facilities</h2>
+            <p>Chris Pritchard shares his experience conducting security tests on some of the most secure facilities in the industry, including critical national infrastructure (CNI), airports, and casinos. His approach focuses on practical, accessible techniques rather than complex psychological theories.</p>
+            
+            <div class="key-point">
+                <strong>Core Philosophy:</strong> "This is for people who want to get into social engineering but think that they must know everything about body language, facial expressions... you don't. These tips have got me into some places that you really should not be in."
+            </div>
+            
+            <h3>Essential Terminology:</h3>
+            <ul>
+                <li><strong>SE:</strong> Social Engineering</li>
+                <li><strong>CNI:</strong> Critical National Infrastructure (airports, nuclear plants, water treatment)</li>
+                <li><strong>OSINT:</strong> Open Source Intelligence (Google, Street View, social media)</li>
+                <li><strong>Pretext:</strong> "The lie - the story you're going to tell somebody about why you were there"</li>
+                <li><strong>NDA:</strong> Non-Disclosure Agreements (limits specific operational details)</li>
+            </ul>
+
+            <div class="quote-box">
+                "I've been conducting security tests and audits of ICS and rail, air, maritime and utility sectors as well as SE and physical work at nuclear sites... successfully gaining access into CNI, airports, and casinos."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Phase 1: Reconnaissance - Doing Your Homework</h2>
+            
+            <div class="phase-grid">
+                <div class="phase-card">
+                    <h4>OSINT Collection</h4>
+                    <p>Use Google, Street View, company websites, and social media to understand company culture, dress code, and operational patterns. This builds the foundation for believable pretexts.</p>
+                </div>
+                
+                <div class="phase-card">
+                    <h4>Physical Site Survey</h4>
+                    <p>Visit the target location and walk around it. Look for weaknesses while being aware that there will be witnesses. Common areas to assess include back entrances, smoking areas, and shared offices.</p>
+                </div>
+                
+                <div class="phase-card">
+                    <h4>Observation Techniques</h4>
+                    <p>Spend hours in communal reception areas with a laptop, observing staff behavior, dress codes, busy times, and security procedures.</p>
+                </div>
+            </div>
+
+            <h3>Key Reconnaissance Targets:</h3>
+            <div class="physical-grid">
+                <div class="physical-card">
+                    <h4>Back Entrances</h4>
+                    <p>"Most security is built around people coming in the front entrance - it's not built around people coming in the back entrance." Often less monitored with weaker physical controls.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Smoking Areas</h4>
+                    <p>"I bought a vape machine just so I can go and stand in a smoking shed and build rapport with people... then walk back into the building with them because you're part of them." Natural social entry points.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Shared Offices</h4>
+                    <p>In high-rise buildings, identify the specific floor and office. Use communal reception areas for extended observation without raising suspicion.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>ID Badge Systems</h4>
+                    <p>Note badge colors, lanyard types, metal attachments, and wearing styles. Build a collection of authentic-looking accessories.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Collection Development:</strong> "Eventually you end up with a collection... this blue lanyard with a blank ID badge but with some metal jangly bits - that's what got me into an airport because that's what they were wearing."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Phase 2: Pretext Development - Building Your Story</h2>
+            
+            <h3>Pretext Construction Principles:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Leverage Your Knowledge</h4>
+                    <p>"Fit that pretext around what you know... I often pretend I'm an IT network engineer because I know that stuff. If people challenge me, I know how to talk IT network stuff." Use familiar domains to avoid cognitive load.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Partial Truth Strategy</h4>
+                    <p>"If you surround a story in part truth, it becomes believable - not just to you but to the person you're telling it to." Blend factual elements with the fabricated narrative.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Appropriate Costuming</h4>
+                    <p>"Get your outfit... if you're going to pretend to be an alarm engineer, dress like an alarm engineer." Match the observed dress code from reconnaissance.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Strategic Props</h4>
+                    <p>"Bring some props because again props help you reinforce that idea you should be there." Laptops for IT engineers, toolboxes for maintenance staff.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Knowledge-Based Pretexting:</strong> "What you want is if you were challenged, you want the information to come from your conscious - you don't want to have to think about it from your subconscious because you will end up going 'uh...'"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Physical Security Weaknesses: Gates & Access Control</h2>
+            
+            <h3>Gate Exploitation Techniques:</h3>
+            <div class="physical-grid">
+                <div class="physical-card">
+                    <h4>Physical Barrier Weaknesses</h4>
+                    <p>Look for poorly designed barriers with gaps, low heights, or weak construction. Many gates are "pathetic" and can be stepped over, under, or around.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Security Office Blind Spots</h4>
+                    <p>Identify security office positioning - they often focus on front entrances while side and rear approaches remain unmonitored.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>The Longman Technique</h4>
+                    <p>"Put a laptop bag directly behind someone and trick the system into thinking there is someone still there." Blocks gate sensors to enable tailgating without detection.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Timing Strategies</h4>
+                    <p>Tailgate during busy periods for social entry. Use quiet times for physical bypass attempts at secondary entrances.</p>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                "Don't see gates as a hard and fast barrier - there are ways around them. They are a weakness in some cases... The number of times I've done that [Longman technique] and been successful is unbelievable."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Phase 3: Internal Operations - Once You're Inside</h2>
+            
+            <h3>Internal Movement Strategies:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Adrenaline Management</h4>
+                    <p>"Keep calm because you have this massive adrenaline buzz... if you have that adrenaline buzz you kind of give yourself away." Recognize and control physiological responses.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Tactical Hiding Locations</h4>
+                    <p>"Hiding in a toilet is brilliant... a colleague has actually printed out a laminated 'out of order' sign." Use restrooms for regrouping and adrenaline recovery.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Exit Strategy Planning</h4>
+                    <p>Identify push-button vs swipe-card controlled exits. Plan escape routes and alternative exit methods before beginning operations.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Target-Focused Movement</h4>
+                    <p>"Think about that target and how you're gonna get from where you are now... to where that thing potentially is." Maintain objective focus amid environmental complexity.</p>
+                </div>
+            </div>
+
+            <h3>Social Interaction Techniques:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Direct Request Method</h4>
+                    <p>"Don't be afraid to ask for help... 'Hi I'm from the other office and my badge doesn't work on this particular door, would you mind helping me in?'" Simple, direct requests often succeed.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Polite Conversation Engagement</h4>
+                    <p>"Engage in polite conversation... don't make them your best friend." Normal workplace interactions build authenticity without over-engagement.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Authority Association</h4>
+                    <p>Identify and interact with powerful individuals. "Talking to somebody in power like that builds acceptance... everybody around thought that I should be there because I was talking to this lady of power."</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Airport Example:</strong> "I got into the office and saw a lady of power... I purposely walked around lost and asked for help finding a desk number. She got up and helped me, which made everyone around think I should be there because I was talking to someone important."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Psychological Principles & Mindset Management</h2>
+            
+            <h3>Key Psychological Concepts:</h3>
+            <div class="physical-grid">
+                <div class="physical-card">
+                    <h4>Don't Negate the Frame</h4>
+                    <p>"If I say 'don't think about pink elephants' - everyone starts thinking about pink elephants... If I said 'don't worry I'm not here to hack the network' - what's the first thing that person is going to be thinking?" Frame statements positively.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Inner Voice Management</h4>
+                    <p>"We all have this inner voice building all these bad and negative things... don't listen to it." Recognize fear-based thinking and maintain operational focus.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Ethical Framing</h4>
+                    <p>"Tell yourself you're acting and it makes it okay-ish." Use professional mindset techniques to manage personal ethics during authorized testing.</p>
+                </div>
+                
+                <div class="physical-card">
+                    <h4>Positive Framing Technique</h4>
+                    <p>Instead of "I'm not here to hack," use "I'm here to make your internet faster." Positive framing creates cooperation rather than suspicion.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Chris Hadnagy Principle:</strong> "Always leave people better feeling for having met you. That's really really useful because it builds acceptance and makes you seem like you should be there."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Operational Realities & Self-Care</h2>
+            
+            <h3>Practical Considerations:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Physical Exhaustion</h4>
+                    <p>"SE is exhausting... the adrenaline ups and downs and crashes, pretending to be somebody else for an entire day is absolutely exhausting." Plan for recovery time after operations.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Get-out-of-Jail Planning</h4>
+                    <p>Consider tactical placement of authorization letters. "If I get stopped by police with guns and I have a letter in my jacket pocket... that's probably not a good place to put it." Think through emergency scenarios.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Failure Acceptance</h4>
+                    <p>"You're gonna fail at some point - don't worry, treat it as practice." Build resilience through iterative learning and experience.</p>
+                </div>
+            </div>
+
+            <h3>Recommended Reading & Skill Development:</h3>
+            <ul>
+                <li><strong>Chris Voss:</strong> "Never Split the Difference" - FBI negotiation techniques</li>
+                <li><strong>Olivia Fox Cabane:</strong> "The Charisma Myth" - Useful for introverts and social skill development</li>
+                <li><strong>Jenny Radcliffe:</strong> "The People Profiler" - UK SE practitioner insights</li>
+                <li><strong>Joe Navarro:</strong> "What Every Body is Saying" - Body language fundamentals</li>
+            </ul>
+
+            <div class="quote-box">
+                "When I first started doing SE I had real ethics problems because my mom and my dad had always told me not to break into buildings... You have to tell yourself you're acting and it makes it okay-ish for authorized testing."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Red Teams</h2>
+            
+            <h3>Essential Operational Principles:</h3>
+            <ol>
+                <li><strong>Thorough reconnaissance is non-negotiable</strong> - OSINT and physical observation provide critical intelligence</li>
+                <li><strong>Pretext from personal knowledge domains</strong> - Use familiar topics to reduce cognitive load under pressure</li>
+                <li><strong>Physical security often has obvious weaknesses</strong> - Back entrances, poor gate design, and blind spots are common</li>
+                <li><strong>Manage adrenaline and emotional responses</strong> - Use hiding spots and breathing techniques to maintain composure</li>
+                <li><strong>Simple social approaches often work best</strong> - Direct requests and polite conversation beat complex manipulations</li>
+                <li><strong>Positive framing over negative statements</strong> - "I'm here to help" works better than "I'm not here to harm"</li>
+                <li><strong>Plan for exhaustion and recovery</strong> - SE operations are mentally and physically draining</li>
+                <li><strong>Practice and accept failure</strong> - Build skills through experience and learn from mistakes</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Professional Development:</strong> "Practice - get your company to get you involved in these kind of tests. You're gonna fail at some point - don't worry, treat it as practice. That's how you build real capability in social engineering operations."
+            </div>
+
+            <h3>Defensive Awareness Points:</h3>
+            <ul>
+                <li>Monitor back entrances and secondary access points with equal vigilance</li>
+                <li>Train staff to verify identities beyond superficial appearances and props</li>
+                <li>Implement challenge-response protocols for unusual requests</li>
+                <li>Be aware of social engineering during high-traffic periods</li>
+                <li>Recognize that simple, direct requests can be social engineering attempts</li>
+                <li>Maintain awareness of psychological principles like "don't negate the frame"</li>
+            </ul>
+
+            <div class="quote-box">
+                "These tips have got me into some places that you really should not be in... with permission of course. The basics work - you don't need to be a psychological expert to be effective in social engineering."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../13" class="nav-btn">← Previous Talk</a>
+            <a href="../15" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Chris Pritchard Basics of SE Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
