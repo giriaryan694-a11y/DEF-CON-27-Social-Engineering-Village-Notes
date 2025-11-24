@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lesson-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .rideshare-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .rideshare-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+
+        .rideshare-card h4 {
+            color: #E91E63;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .stat-grid, .lesson-grid, .rideshare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Edward Miro - Rideshare OSINT Car-Based SE For Fun and Profit</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../15" class="nav-btn">← Previous Talk</a>
+            <a href="../17" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Edward Miro, Freelance Security Consultant & Penetration Tester</p>
+            <p><strong>Background:</strong> 20 years in IT, 5 years focused on security, physical security specialist, rideshare driver</p>
+            <p><strong>Key Focus:</strong> Using rideshare driving as a social engineering laboratory and OSINT gathering platform</p>
+        </div>
+        
+        <div class="section">
+            <h2>Introduction: From Hacker to Rideshare Driver</h2>
+            <p>Edward Miro shares his unconventional journey into social engineering through rideshare driving, demonstrating how everyday interactions can become valuable security learning opportunities.</p>
+            
+            <div class="key-point">
+                <strong>Career Transition:</strong> "I had recently left a career as a federal contractor that didn't really make me happy and I just needed a way to make money... Driving for Uber or Lyft isn't really that bad if you keep your car clean, have social awareness, and are not super awkward."
+            </div>
+            
+            <h3>Background & Experience:</h3>
+            <ul>
+                <li>20 years in IT and security since the mid-90s</li>
+                <li>Started with dial-up tech support for EarthLink</li>
+                <li>Freelance penetration testing and security consulting</li>
+                <li>Host of "The Pseudo Social Club" podcast and YouTube channel</li>
+                <li>Mentor and judge at HACC Davis 2019 with lock-picking workshops</li>
+                <li>Speaker at Noir Con hacker conference in Chico, California</li>
+            </ul>
+
+            <div class="quote-box">
+                "Like many of you, I've been in the world of hacking since the mid-90s. I was a teenager running Sub7, making people's CD-ROM trays open, and making system dialog boxes that said 'Boner Alert' - you know, very elite."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Ethical Framework & Research Methodology</h2>
+            
+            <div class="rideshare-grid">
+                <div class="rideshare-card">
+                    <h4>Ethical Boundaries</h4>
+                    <p>No audio or video recording of interactions, completely anonymous note-taking, no PII documentation. All interactions were 100% authentic and organic.</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Research Period</h4>
+                    <p>Drove for Lyft from December 2018 to February 2019 in Chico, California. Most interesting correlation found: talkers tend to tip better.</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Psychological Phenomenon</h4>
+                    <p>Observed that people share sensitive information freely in rideshare environment, possibly due to app-based nature creating perception of anonymity.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Observation:</strong> "I only wrote this talk as an observation of how much personal and private information riders will share in this environment and how it could be weaponized... People take the app-based nature and it kind of bleeds mentally into the grey area of the anonymous nature of the internet."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Foundational Social Skills Development</h2>
+            
+            <h3>Core Social Engineering Principles:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Dale Carnegie Foundation</h4>
+                    <p>"How to Win Friends and Influence People" (1936) as essential reading. Not about manipulation but genuine human connection: become interested in others, remember names, be a good listener.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Social Skills Gap</h4>
+                    <p>Most social engineering books assume basic social skills. Many in IT/security lack these foundational abilities and need to develop them deliberately.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Personal Transformation</h4>
+                    <p>From shy teenager to socially capable through college public speaking and communication classes. "If I can learn this, I think almost anyone can."</p>
+                </div>
+            </div>
+
+            <h3>Dale Carnegie's Six Ways to Make People Like You:</h3>
+            <ol>
+                <li>Become genuinely interested in other people</li>
+                <li>Smile</li>
+                <li>Remember that a person's name is to that person the sweetest and most important sound</li>
+                <li>Be a good listener - encourage others to talk about themselves</li>
+                <li>Talk in terms of the other person's interests</li>
+                <li>Make the other person feel important - and do it sincerely</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Mindset Shift:</strong> "Every person I've met has had something interesting to teach me or some interesting experiences to share with me... People you meet during your daily lives can be like the internet - an unlimited resource for curiosity and learning."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Rideshare Operational Excellence</h2>
+            
+            <h3>Driver Best Practices:</h3>
+            <div class="rideshare-grid">
+                <div class="rideshare-card">
+                    <h4>Vehicle Maintenance</h4>
+                    <p>Keep car clean, odor-free, and smoke-free. Regular car wash membership. "I don't like it when a car is dirty or smells funky."</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Driving Competence</h4>
+                    <p>Be a good, safe driver. This builds immediate trust and comfort with passengers.</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Social Awareness</h4>
+                    <p>Read passenger cues for desired interaction level. "If the passenger is paying for the ride, they should get the level of comfort they desire."</p>
+                </div>
+            </div>
+
+            <h3>Conversation Starters & Techniques:</h3>
+            <ul>
+                <li>Use passenger's name when they enter to confirm identity and build rapport</li>
+                <li>Standard openers: "What's your major?", "What do you do?", "Are you from here?"</li>
+                <li>Comment on personal items: "I see you have [item], tell me about that"</li>
+                <li>Address-based recognition: "Based on that address, you must work for [company]"</li>
+                <li>Industry knowledge: Use insider terminology and name-dropping when appropriate</li>
+            </ul>
+
+            <div class="quote-box">
+                "95% of people want to talk at least a little bit... Even passengers who aren't overly chatty expect at least a little small talk. Getting my social skills back wasn't that hard to do - you have to use these things."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>OSINT Gathering Through Rideshare</h2>
+            
+            <h3>Passive Intelligence Collection:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Corporate Intelligence</h4>
+                    <p>Identify company employees by pickup locations. Use insider knowledge and name-dropping to build rapport and gather information about software, projects, and internal gossip.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Executive Targeting</h4>
+                    <p>"Executives are the most fun - they love to brag." Tech-savvy executives particularly enjoy conversations with knowledgeable drivers.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Sensitive Information Shared</h4>
+                    <p>Medical conditions, criminal histories, legal situations, relationship problems, infidelities, personal betrayals. "I've had people tell me more about their medical conditions than I ever wanted to know."</p>
+                </div>
+            </div>
+
+            <h3>Information Types Collected Organically:</h3>
+            <ul>
+                <li>Corporate software and systems in use</li>
+                <li>Internal company gossip and politics</li>
+                <li>Personal medical and mental health information</li>
+                <li>Criminal histories and legal situations</li>
+                <li>Relationship problems and infidelities</li>
+                <li>Financial situations and employment status</li>
+                <li>Personal invitations to bars, restaurants, apartments</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Weaponization Potential:</strong> "And what if I was a bad guy? Do you think people are telling me things I could use against them? ...I'm just this random guy, and all I'm doing is being nice and friendly to them, speaking their lingo, being interested in them."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Active Targeting & Strategic Operations</h2>
+            
+            <h3>Targeted Intelligence Gathering:</h3>
+            <div class="rideshare-grid">
+                <div class="rideshare-card">
+                    <h4>Geographic Staging</h4>
+                    <p>Park near specific companies or locations of interest. "If my car is the closest one to you when you request a ride, there's a 99% chance I'm gonna get that passenger."</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Pattern Recognition</h4>
+                    <p>Use OSINT to identify target patterns - daily commutes, weekend routines. "You can almost guarantee you'll be matched" with specific targets.</p>
+                </div>
+                
+                <div class="rideshare-card">
+                    <h4>Repeat Ride Strategy</h4>
+                    <p>While rare, repeat rides do occur, especially with commuters. "It wouldn't be weird to get the same person on a regular basis." Use pretext of living nearby.</p>
+                </div>
+            </div>
+
+            <h3>High-Value Targeting Locations:</h3>
+            <ul>
+                <li><strong>Airports:</strong> Travelers with valuable information, time constraints</li>
+                <li><strong>Tech Industrial Sectors:</strong> Employees from specific companies</li>
+                <li><strong>Corporate Headquarters:</strong> Executives and decision-makers</li>
+                <li><strong>Commuter Routes:</strong> Regular patterns for repeated access</li>
+                <li><strong>Business Districts:</strong> Concentration of corporate targets</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>Psychological Analysis:</strong> From Reddit psychology response: "You have many qualities of a good bartender - it's a temporary friendly paid trusted relationship which is about satisfying an immediate need... You have an empathetic ear that makes people feel safe."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Real-World Scam Prevention Case Studies</h2>
+            
+            <h3>Puppy Adoption Scam Intervention:</h3>
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h4>Initial Red Flags</h4>
+                    <p>Passenger asked about wiring money for puppy adoption. $350 payment to "pet transportation company." Seller wouldn't speak on phone due to "religious reasons."</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Investigation Process</h4>
+                    <p>Examined emails, checked social media for seller, analyzed shipping company website, verified phone numbers, conducted reverse image searches on puppy photos.</p>
+                </div>
+                
+                <div class="lesson-card">
+                    <h4>Successful Intervention</h4>
+                    <p>Confirmed scam through multiple verification methods. Passenger saved $350+ and educated about online scams.</p>
+                </div>
+            </div>
+
+            <h3>Scam Red Flags Identified:</h3>
+            <ul>
+                <li>Seller wouldn't talk on the phone</li>
+                <li>Seller name didn't seem legitimate</li>
+                <li>Shipping company name didn't match URL and email</li>
+                <li>Legitimate company came up first in searches</li>
+                <li>Poorly designed company website</li>
+                <li>No social media presence</li>
+                <li>Generic email address (Outlook.com)</li>
+                <li>Google Voice number with screening enabled</li>
+                <li>Reverse image search showed stolen photos</li>
+                <li>Sense of urgency and pressure tactics</li>
+            </ul>
+
+            <div class="quote-box">
+                "I always feel the best way to handle someone getting caught in a scam is to be on their side and never shame them. We're all humans, we're all susceptible to social engineering no matter how smart you think you are."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Security Awareness & Organizational Impact</h2>
+            
+            <h3>Educational Approach:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Individual Empowerment</h4>
+                    <p>Teach practical skills like reverse image searching, email verification, and phone number analysis. "These small acts from us can go a long way to make the world a little bit safer."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Organizational Learning</h4>
+                    <p>"Never fire an employee that fails a phishing or pen test. That person is gonna go on to be the most vigilant after that experience and they're gonna tell everyone at the company what happened."</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Storytelling Impact</h4>
+                    <p>Use individual stories rather than statistics. "Stories about individuals are much more impactful than numbers... You have to show them how it could happen to them."</p>
+                </div>
+            </div>
+
+            <h3>The Power of Framing in Security Awareness:</h3>
+            <ul>
+                <li><strong>Individual Focus:</strong> Stories about single individuals generate more concern and action</li>
+                <li><strong>Personal Connection:</strong> Make security threats relatable to decision-makers' personal experiences</li>
+                <li><strong>Emotional Impact:</strong> Statistics numb response, stories engage emotions</li>
+                <li><strong>Practical Application:</strong> Use rideshare scenarios to demonstrate real-world vulnerabilities</li>
+                <li><strong>Positive Reinforcement:</strong> Frame security as empowerment rather than restriction</li>
+            </ul>
+
+            <div class="offensive-point">
+                <strong>Psychological Framing:</strong> "If you show a participant the picture of a single child, they donate X dollars. But if you show them the child with a sibling it goes down, and a child with sibling and parents it goes down more, and a picture of a whole community even less... If you want decision-makers to care about your proposed security protocols, you have to tell them stories about individuals."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways for Security Professionals</h2>
+            
+            <h3>Essential Security Awareness Points:</h3>
+            <ol>
+                <li><strong>Assume no interaction is anonymous</strong> - Even friendly rideshare drivers might have ulterior motives</li>
+                <li><strong>Develop basic social skills foundation</strong> - Social engineering requires genuine human connection abilities</li>
+                <li><strong>Recognize environmental vulnerabilities</strong> - Context shapes information sharing behavior</li>
+                <li><strong>Implement practical verification skills</strong> - Reverse image searching, email analysis, phone verification</li>
+                <li><strong>Use storytelling in security training</strong> - Individual stories beat statistics for impact</li>
+                <li><strong>Leverage everyday opportunities for awareness</strong> - Random interactions can become teaching moments</li>
+                <li><strong>Maintain ethical boundaries in research</strong> - No recording, no PII collection, authentic interactions</li>
+                <li><strong>Understand psychological framing</strong> - How presentation affects security decision-making</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Core Message:</strong> "The biggest takeaway I'm hoping for here is awareness. I love that people are friendly and amenable to small talk, but you shouldn't assume any of your interactions are anonymous... Even your friendly neighborhood rideshare driver might be a hacker - you never know."
+            </div>
+
+            <h3>Red Team Applications:</h3>
+            <ul>
+                <li>Use rideshare driving as social engineering training laboratory</li>
+                <li>Develop geographic targeting strategies for physical security testing</li>
+                <li>Practice organic information extraction in low-suspicion environments</li>
+                <li>Test organizational security awareness through unconventional vectors</li>
+                <li>Develop empathy and communication skills for social engineering</li>
+                <li>Create realistic security awareness training scenarios based on actual interactions</li>
+            </ul>
+
+            <div class="quote-box">
+                "If you want to learn social engineering, you need to be comfortable and confident socializing and dealing with humans. Doing rideshare is a great way to get a ton of social interactions quick and can be a wonderful laboratory to hone those skills. I mean, where else can you do that?"
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../15" class="nav-btn">← Previous Talk</a>
+            <a href="../17" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Edward Miro Rideshare OSINT Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
