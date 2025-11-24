@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27: Ryan MacDougall</title>
+    <style>
+        /* * 1. CSS Variables for Theming 
+         */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-color: #d40000; /* DEF CON Red */
+            --header-sub-color: #555;
+            --code-bg-color: #eee;
+            --shadow-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme {
+            --bg-color: #2b2b2b;
+            --text-color: #f1f1f1;
+            --border-color: #555;
+            --header-color: #ff4141; /* Lighter Red for dark bg */
+            --header-sub-color: #ccc;
+            --code-bg-color: #444;
+            --shadow-color: rgba(0,0,0,0.2);
+        }
+
+        /* * 2. General Body Styles (using variables)
+         */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            padding: 0 10px;
+        }
+
+        /* * 3. Theme Toggle Button Styles
+         */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: var(--code-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* * 4. Content Styles (using variables)
+         */
+        h1 {
+            color: var(--header-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: var(--header-sub-color);
+            font-style: italic;
+            font-weight: normal;
+            font-size: 1.2em;
+            margin-top: -10px;
+        }
+        h3 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code, pre {
+            background-color: var(--code-bg-color);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">Switch to Dark Mode</button>
+
+    <div class="container">
+        <h1>OSINT in the Real World</h1>
+        <h2>Ryan MacDougall - DEF CON 27 Social Engineering Village<br>Notes By Aryan Giri</h2>
+
+        <h3>Introduction: The Mindset, Not the Tools</h3>
+        <p>
+            Ryan MacDougall, a social engineer and OSINT trainer, clarifies that this talk isn't about client-based, high-level OSINT. Instead, it's about using **basic, practical OSINT skills** in everyday life.
+        </p>
+        <ul>
+            <li>His core philosophy: <strong>"It's not the toolset, it's the mindset."</strong></li>
+            <li>He emphasizes the importance of **"natural observation"**—being aware of your surroundings and the unseen information available.</li>
+            <li>The goal is to use OSINT for "fun stories, freaking out your neighbors, and getting the edge in any job."</li>
+        </ul>
+
+        <h3>Case Study 1: The Truck Books (Fun with a 5-Year-Old)</h3>
+        <ul>
+            <li><strong>Goal:</strong> A fun game with his son to find the origin of trucks pictured in his library books.</li>
+            <li><strong>Method:</strong>
+                <ul>
+                    <li>They find phone numbers and license plates in the book's photos.</li>
+                    <li>Using a phone, they search the area code (or full number) to find the company's location (e.g., St. Paul, MN; Michigan).</li>
+                    <li>They then plot the locations on his son's US map.</li>
+                </ul>
+            </li>
+            <li><strong>Key Takeaway:</strong> He's teaching his son to see *all* the information on a page, not just the text. For example, by looking closer at one truck, they could read "Eagan, Minnesota" directly on the door, confirming their earlier search.</li>
+        </ul>
+
+        <h3>Case Study 2: Vetting the Neighbors (Victor & Julia)</h3>
+        <ul>
+            <li><strong>Goal:</strong> He and his wife (both introverts) kept forgetting their neighbors' names and wanted to vet them as "fine upstanding people" to be around their son.</li>
+            <li><strong>The OSINT Path:</strong>
+                <ol>
+                    <li>Used **Google Maps** to get the house address.</li>
+                    <li>Searched the address to find **Public Voter Records**.</li>
+                    <li>Voter records provided three names: **Victor** (the father's name he remembered) and an "assumed wife's" name, which he didn't recognize.</li>
+                    <li>The records also showed a **business registered** at the address.</li>
+                    <li>A search for the business confirmed the "assumed wife's" name as the owner and led to a **Facebook page**.</li>
+                    <li>Facebook confirmed their photos and listed the university she attended.</li>
+                    <li><strong>The Problem:</strong> The name on Facebook and the business records was *still not* the name he remembered hearing.</li>
+                    <li>He followed another lead (Spokeo) for Victor. The "Related To" section listed *both* the business name *and* the name he thought he knew: **"Julia."**</li>
+                    <li>A new Google search for "Julia [Last Name]" + State led to a **LinkedIn profile** for a Vice President of a bank (with no photo).</li>
+                    <li><strong>The Correlation:</strong> The education on this new LinkedIn profile matched the education listed on the original Facebook page.</li>
+                    <li>A **Google Image search** for "Julia [Last Name]" found a picture of her, which linked back to the *same* LinkedIn profile. (He notes: "Google never forgets").</li>
+                </ol>
+            </li>
+            <li><strong>Conclusion:</strong> He confirmed her real name ("Julia") and her high-level job at a bank, making him feel more comfortable.</li>
+        </ul>
+
+        <h3>Case Study 3: The Contractor (Dan)</h3>
+        <ul>
+            <li><strong>Goal:</strong> Vet a contractor for a home project.</li>
+            <li><strong>Starting Info:</strong> Only a first name ("Dan") and a phone number.</li>
+            <li><strong>The OSINT Path:</strong>
+                <ol>
+                    <li>A phone number search led to a "home builder company" name.</li>
+                    <li>Searching the company + "Dan" led to a Manta.com link, which provided his **full last name**.</li>
+                    <li>Another link for the company was dead, but he used **Google Cache** to view the old page.</li>
+                    <li>The cached page was **Dan's resume!**</li>
+                    <li>The resume showed his career history: former Chef, then HVAC tech, then home builder.</li>
+                    <li>A new search for his full name revealed he was also the co-owner of a **cannabis business**.</li>
+                </ol>
+            </li>
+            <li><strong>Conclusion:</strong> The OSINT raised *more questions* than it answered. Why did he start a new construction company this year? Was he spread too thin? He was left unsure about hiring him.</li>
+        </ul>
+
+        <h3>Core Lesson: Knowledge is Confidence</h3>
+        <p>
+            Ryan's main point is that "knowledge is power" is better said as **"knowledge is confidence."** The more you know about your target, client, or even neighbor, the more confident and effective you can be.
+        </p>
+
+        <h3>Q&A Highlights</h3>
+        <ul>
+            <li><strong>Favorite Tools:</strong> Search Engines (Google, Baidu, Yandex). He stresses that the **mindset and documentation are key**, as tools come and go.</li>
+            <li><strong>Data Storage:</strong> He uses a simple, clear documentation method:
+                <ol>
+                    <li>Line 1: The exact search query.</li>
+                    <li>Line 2: The URL of the useful result.</li>
+                    <li>Line 3: The specific tidbits of information found.</li>
+                </ol>
+            </li>
+            <li><strong>Paywall Sites (e.g., People.com):</strong> He **rarely** uses them. He consciously *avoided* them for this talk and found he got a *better* and less overwhelming story by sticking to public information.</li>
+            <li><strong>Protecting Your Own Privacy:</strong> You can't do much. The most important thing is to **know what is publicly available about you** and "react accordingly" when someone uses that information.</li>
+            <li><strong>Avoiding Rabbit Holes:</strong> "Doing OSINT with no goal is just web surfing." Always have a specific goal. If you go 3-5 steps down a path and find nothing useful, pull back and try a different fork.</li>
+        </ul>
+
+    </div>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Theme Logic ---
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            setCookie('theme', newTheme, 365); // Store preference for 1 year
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Add click listener to the button
+            themeToggleButton.addEventListener('click', toggleTheme);
+
+            // 2. Apply saved theme from cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Optional: Check OS preference if no cookie
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light'); // Default
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
