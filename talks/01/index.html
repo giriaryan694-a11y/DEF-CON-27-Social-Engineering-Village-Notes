@@ -3,296 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEF CON 27: R. Paul Wilson</title>
+    <title>DEF CON 27 Social Engineering Village Notes</title>
     <style>
-        /* * 1. CSS Variables for Theming 
-         */
         :root {
-            --bg-color: #f9f9f9;
-            --text-color: #333;
-            --border-color: #ddd;
-            --header-color: #d40000; /* DEF CON Red */
-            --header-sub-color: #555;
-            --code-bg-color: #eee;
-            --shadow-color: rgba(0,0,0,0.05);
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
         }
-
-        body.dark-theme {
-            --bg-color: #2b2b2b;
-            --text-color: #f1f1f1;
-            --border-color: #555;
-            --header-color: #ff4141; /* Lighter Red for dark bg */
-            --header-sub-color: #ccc;
-            --code-bg-color: #444;
-            --shadow-color: rgba(0,0,0,0.2);
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* * 2. General Body Styles (using variables)
-         */
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
             line-height: 1.6;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 25px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            transition: background-color 0.3s, color 0.3s;
         }
-
+        
         .container {
-            padding: 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        /* * 3. Theme Toggle Button Styles
-         */
-        #theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 12px;
-            font-size: 0.9em;
-            font-weight: bold;
-            background-color: var(--code-bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
         }
-
-        #theme-toggle:hover {
-            opacity: 0.8;
-        }
-
-        /* * 4. Content Styles (using variables)
-         */
+        
         h1 {
-            color: var(--header-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: white;
         }
-        h2 {
-            color: var(--header-sub-color);
-            font-style: italic;
-            font-weight: normal;
-            font-size: 1.2em;
-            margin-top: -10px;
-        }
-        h3 {
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-top: 40px;
-        }
-        h4 {
-            color: var(--text-color);
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
             margin-bottom: 5px;
         }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+        
         p {
             margin-bottom: 15px;
         }
-        ul {
+        
+        ul, ol {
             margin-left: 20px;
             margin-bottom: 15px;
         }
+        
         li {
             margin-bottom: 8px;
         }
-        code, pre {
-            background-color: var(--code-bg-color);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: "Courier New", Courier, monospace;
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+        
+        .scam-demo {
+            background-color: rgba(15, 52, 96, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #ccc;
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+            margin: 15px 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <button id="theme-toggle">Switch to Dark Mode</button>
-
+    <header>
+        <div class="container">
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">R Paul Wilson - The Real Hustle: Insights from a Professional Scam Artist</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
     <div class="container">
-        <h1>DEF CON 27 Social Engineering Village: R. Paul Wilson</h1>
-        <h2>Notes By Aryan Giri</h2>
-
-        <h3>Introduction: An Impromptu Talk</h3>
-        <p>
-            R. Paul Wilson, host of the BBC's "The Real Hustle," gives an impromptu talk about his life and experiences in the world of cons, scams, and magic. He notes that his fascination with both began at age eight. He jokes that life (perhaps a simulation) "allowed me to perform more cons and scams than any other human being in history," not because he's the best, but because his unique career path had him demonstrating them constantly for research and entertainment.
-        </p>
-
-        <h3>The "Gang Who Couldn't Cheat Straight"</h3>
-        <p>
-            Wilson explains his path to TV, starting with consulting on a movie about cheating starring Sylvester Stallone. This led to a reality show called "The Takedown," where he and a team were allowed by the Gaming Control Board to cheat in real casinos (with their permission).
-        </p>
-        <p>
-            They called themselves "the gang who couldn't cheat straight" because it was often their first time trying these complex cheats in a live environment. This experience and his expertise led directly to his job on the BBC's "The Real Hustle."
-        </p>
-
-        <h3>Case Study 1: The Glasgow Poker Game (A Lesson Learned)</h3>
-        <p>
-            Wilson recounts an early story from before his TV career, playing in the "Jim Baxter game" in Glasgow, a very tough town.
-        </p>
-        <ul>
-            <li>The game used cards that were so old they were already marked from wear. Wilson eventually supplied new decks to the game, which he had secretly marked himself.</li>
-            <li>He played heads-up in a tournament against "Steve M," a world-class player and a world-class jerk.</li>
-            <li>With a crowd watching, Wilson peeked at the top card and saw it would give him a flush. He decided to perform a <strong>"second deal"</strong> (a high-level sleight-of-hand move) to deal the second card to his opponent and keep the flush card for himself.</li>
-            <li>He executed the move perfectly, went all-in with his flush... and his opponent beat him with a full house (made from the second card).</li>
-            <li><strong>The Lesson:</strong> Wilson realized his cheat backfired. He states that if he had played honestly, he would have received that second card himself (which he claims "was *also* that card I needed for the flush") and he would have won.</li>
-        </ul>
-
-        <h3>Methodology of "The Real Hustle"</h3>
-        <p>
-            Wilson stresses that, despite what people may think, <strong>they absolutely scammed those people for real.</strong> The victims were not actors.
-        </p>
-        <ul>
-            <li>The "trick" of the show was the very short time between the person realizing they'd lost their money and the crew stepping in.</li>
-            <li>The crew would capture that moment of genuine shock before revealing the con.</li>
-            <li>The "magic line" that defused every single situation: <strong>"It's okay, I'm with the BBC."</strong></li>
-        </ul>
-
-        <h3>Case Study 2: Authority and De-escalation</h3>
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> R Paul Wilson, creator and star of "The Real Hustle"</p>
+            <p><strong>Context:</strong> Impromptu talk about his experiences with cons, scams, and social engineering</p>
+            <p><strong>Key Focus:</strong> How scams work in practice and the psychology behind why people fall for them</p>
+        </div>
         
-        <h4>The Fluorescent Jacket Scam</h4>
-        <ul>
-            <li>In Europe, a yellow fluorescent jacket grants instant, automatic authority.</li>
-            <li>They put an "Out of Order" sign on a parking meter that read, "Please give the cash to the guy with a..." (him, in the jacket).</li>
-            <li>The scam was *so successful* they ran out of "runners" to return the money to the victims.</li>
-        </ul>
-
-        <h4>The Camera Lens Theft</h4>
-        <ul>
-            <li>In Edinburgh, his partner "Polly" would distract a tourist with a map held over their camera lens.</li>
-            <li>Wilson would reach under the map, twist the lens off the camera body, and pocket it.</li>
-            <li>One time, the timing was off, and the tourist (a large man) saw Wilson holding his lens. The man grabbed his heavy-duty camera, ready to "bury it" in Wilson's face.</li>
-            <li>Wilson's response: "It's okay, I'm with the BBC." The man instantly froze, the crew emerged, and the situation was completely de-escalated.</li>
-        </ul>
-
-        <h3>Case Study 3: "The Bouncer" Scam (Victim Psychology)</h3>
-        <p>
-            This scam was pulled directly from an old con artist's booklet.
-        </p>
-        <ol>
-            <li><strong>Step 1:</strong> Sell a box of pens for 5 pounds. Get a crowd. Ask, "Who's happy?" They raise their hands.</li>
-            <li><strong>Step 2:</strong> "If they're happy, give them their money back!" They return all the money.</li>
-            <li><strong>Step 3:</strong> Sell a piece-of-junk glass vase for 10 pounds. More people buy. "Who's happy?"</li>
-            <li><strong>Step 4:</strong> "Give them their money back!" They return all the money again.</li>
-            <li><strong>Step 5:</strong> Sell a junk watch for 50 pounds. Everyone buys. "Who's happy?" The crowd shouts, "We're happy!"</li>
-            <li><strong>Step 6:</strong> "Well, if you're happy, we're happy!" Wilson shuts the truck shutter and they drove away.</li>
-        </ol>
-        <p>
-            <strong>The Twist:</strong> When the crew went back to return the 50 pounds, most of the victims <em>didn't want to give the junk bag back.</em> They weren't angry they got scammed; they were unhappy the scam *stopped*. They had seen PlayStations and TVs in the back of the truck and assumed the game would continue until they got those.
-        </p>
-
-        <h3>Case Study 4: The Celebrity Scam (Improvisation)</h3>
-        <ul>
-            <li>The show brought on a celebrity, Caprice, to pass counterfeit money.</li>
-            <li><strong>The Scam:</strong> Buy a cheap item with a 50-pound note. Get change (e.g., two 20s). Switch the real 20s for counterfeit 20s and say, "Actually, do you have tens?" The cashier, believing the money just came from their own till, exchanges it without checking.</li>
-            <li><strong>The Failure:</strong> Caprice fumbles the move. The cashier spots the *other* counterfeit notes under the DVDs and is about to call the police. Wilson's partner, Jess, immediately bails and leaves the store.</li>
-            <li><strong>The "Social Engineer":</strong> Wilson and his co-host Alex (in ridiculous suits) walk into the shop. Wilson declares, <strong>"Police. We've been following these two girls who've been passing off counterfeit cash."</strong></li>
-            <li>The cashier was overjoyed. They not only "arrested" Caprice and got her out, but they also "confiscated" the *other* bad money from the cashier's till as "evidence."</li>
-        </ul>
-
-        <h3>Favorite Scam 1: "The Razzle" (An Unwinnable Game)</h3>
-        <p>
-            Wilson's all-time favorite scam is "The Razzle," a carnival game that you cannot possibly win.
-        </p>
-        <ul>
-            <li><strong>The Game:</strong> You roll marbles into a box with numbered holes. The numbers are added up. If your total is on the scoreboard (e.g., 44, 35, 24), you win points. Get 10 points, you win the big prize (a car, TV, etc.).</li>
-            <li><strong>The Secret:</strong> The numbers on the board are statistically impossible (or "billions to one") to hit. You can <strong>only</strong> get a winning score if the operator <strong>cheats on your behalf</strong> by miscounting the total.</li>
-            <li><strong>The Hook:</strong> One number on the board (e.g., 29) has no points. Instead, it says "HP" (House Price). If you hit this, you must <strong>double your bet</strong> to continue. The operator also "doubles the prizes."</li>
-            <li><strong>The Con:</strong> The operator "helps" you win, letting you get to 9 or 9.5 points. Then, they make sure you hit the "HP" number. Your bet doubles (from $2 to $4, $8, $16, $32...).</li>
-            <li><strong>The "Close":</strong> You run out of money. The operator says, "I've never seen this happen! You're so close. I'll hold your score for 10 minutes. Go to the ATM, get $400, and I'll give you 20 rolls to get that last half-point."</li>
-            <li><strong>The End:</strong> The victim *always* goes. They come back, roll 20 times themselves, and *never win*—because the operator is no longer "miscounting" to help them. They are so psychologically invested and "certain" they will win that they cannot stop.</li>
-        </ul>
-
-        <h3>Favorite Scam 2: Three-Card Monte</h3>
-        <p>
-            Wilson demonstrates Three-Card Monte (two Jokers, one Queen).
-        </p>
-        <ul>
-            <li>He explains the basic sleight-of-hand move (a "midair switch").</li>
-            <li><strong>The Real Secret:</strong> The con isn't just the move. If the operator "gets a smell" that you know how the move works, they will simply... <strong>stop cheating.</strong></li>
-            <li>Even if you mark the card (like putting a bend in it), you will lose. The operator will take the bend out or transfer it. It's a game of "theatrical mugging" you cannot win.</li>
-        </ul>
-
-        <h3>Conclusion: Practical Sleight of Hand for Security</h3>
-        <p>
-            Wilson concludes by teasing his 2020 workshop. He plans to apply these sleight-of-hand principles to real-world security and social engineering.
-        </p>
-        <ul>
-            <li>The goal is not to target people, but to have the tools to protect your own information.</li>
-            <li><strong>Example:</strong> If someone in authority demands your camera's SD card to be "confiscated," he can teach you how to palm it and switch in a dummy card during the action of handing it over.</li>
-            <li>This includes managing situations, hiding items (USB sticks, laptops), and using distraction the way a magician does to gain an advantage.</li>
-        </ul>
-    </div>
-
-    <script>
-        // --- Cookie Helper Functions ---
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
-        }
-
-        function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-
-        // --- Theme Logic ---
-        const themeToggleButton = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                body.classList.add('dark-theme');
-                themeToggleButton.textContent = 'Switch to Light Mode';
-            } else {
-                body.classList.remove('dark-theme');
-                themeToggleButton.textContent = 'Switch to Dark Mode';
-            }
-        }
-
-        function toggleTheme() {
-            let currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        <div class="section">
+            <h2>Introduction & Background</h2>
+            <p>R Paul Wilson began his fascination with cons and magic at age 8. His career evolved from performing magic to studying and demonstrating real-world scams.</p>
             
-            applyTheme(newTheme);
-            setCookie('theme', newTheme, 365); // Store preference for 1 year
-        }
-
-        // --- On Page Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Add click listener to the button
-            themeToggleButton.addEventListener('click', toggleTheme);
-
-            // 2. Apply saved theme from cookie
-            const savedTheme = getCookie('theme');
-            if (savedTheme) {
-                applyTheme(savedTheme);
-            } else {
-                // Optional: Check OS preference if no cookie
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    applyTheme('dark');
-                } else {
-                    applyTheme('light'); // Default
-                }
-            }
-        });
-    </script>
-
+            <div class="key-point">
+                <strong>Key Insight:</strong> Wilson believes he might be in a simulation because "life allowed me to perform more cons and scams than any other human being in history."
+            </div>
+            
+            <h3>Career Milestones:</h3>
+            <ul>
+                <li>Consulted on a movie about cheating starring Sylvester Stallone</li>
+                <li>Created and starred in "The Real Hustle" TV show for BBC</li>
+                <li>Became the face of "Scamnesty" campaign helping people recognize scams</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Early Experiences & Learning</h2>
+            
+            <h3>Personal Cheating Experiments:</h3>
+            <ul>
+                <li>Practiced card manipulation techniques in real games</li>
+                <li>Marked cards for the "Jim Baxter game" in Glasgow</li>
+                <li>Attempted a "second deal" during a high-stakes poker game but still lost</li>
+            </ul>
+            
+            <div class="quote">
+                "Here I am the leader of the gang who can't cheat straight."
+            </div>
+            
+            <p>This experience taught him that cheating wasn't a viable career path and could lead to serious consequences.</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Real Hustle TV Show</h2>
+            <p>The show involved performing real scams on unsuspecting people, then revealing they were part of a TV show.</p>
+            
+            <div class="key-point">
+                <strong>Important Note:</strong> All scams were performed for real money with real victims who didn't know they were on TV until after the scam was complete.
+            </div>
+            
+            <h3>Notable Scams Demonstrated:</h3>
+            
+            <div class="scam-demo">
+                <h4>The "Bouncer" Scam</h4>
+                <p><strong>Method:</strong></p>
+                <ol>
+                    <li>Sell cheap items (pens) for £5 to gather a crowd</li>
+                    <li>Ask if customers are happy, then refund their money</li>
+                    <li>Repeat with progressively more expensive but still worthless items</li>
+                    <li>At the final high-priced item (£50 watch), take the money and leave</li>
+                </ol>
+                <p><strong>Psychology:</strong> People expected the pattern to continue and thought they'd get even bigger items (PlayStations, TVs) for free.</p>
+            </div>
+            
+            <div class="scam-demo">
+                <h4>Camera Lens Theft</h4>
+                <p><strong>Method:</strong> Use a distraction (asking for directions with a map) while quickly twisting and removing the camera lens.</p>
+                <p><strong>Escape Tactic:</strong> When caught, use the line "I'm with the BBC" which surprisingly worked to defuse situations.</p>
+            </div>
+            
+            <div class="scam-demo">
+                <h4>Counterfeit Money Switch</h4>
+                <p><strong>Method:</strong> Pay with real money, receive change, then request different denominations while switching in counterfeit bills.</p>
+                <p><strong>Rescue Operation:</strong> When celebrity guest Caprice was caught, Wilson and his partner posed as police to extract her and recover evidence.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Favorite Scams & Psychological Insights</h2>
+            
+            <div class="scam-demo">
+                <h4>The "Razzle" (Carnival Game)</h4>
+                <p>Considered Wilson's favorite scam because it's mathematically impossible to win but psychologically compelling.</p>
+                <p><strong>How it works:</strong></p>
+                <ul>
+                    <li>Players throw marbles into a numbered box</li>
+                    <li>Only specific totals win points</li>
+                    <li>When players hit "29", they must double their bet</li>
+                    <li>This continues until players run out of money</li>
+                    <li>Operator then offers to hold their winnings if they get more money</li>
+                </ul>
+                <p><strong>Key Insight:</strong> The game was so effective in Blackpool that it had to be made illegal as people would lose their entire vacation budget in days.</p>
+            </div>
+            
+            <div class="scam-demo">
+                <h4>Three-Card Monte</h4>
+                <p>Wilson demonstrated this classic street scam and explained its mechanics:</p>
+                <ul>
+                    <li>Uses psychological manipulation rather than pure sleight of hand</li>
+                    <li>Includes "mid-air switches" where cards are swapped during throws</li>
+                    <li>Even when you know how it works, it's difficult to beat</li>
+                    <li>Operators will stop cheating if they sense you know the game</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Key Psychological Principles</h2>
+            
+            <h3>Empathy as a Tool</h3>
+            <p>Wilson emphasized that gaining empathy and returning it is one of the most powerful social engineering tools.</p>
+            
+            <h3>Authority & Perception</h3>
+            <ul>
+                <li>Simple props like yellow fluorescent jackets create automatic authority</li>
+                <li>People assume you're official and will follow instructions</li>
+            </ul>
+            
+            <h3>Pattern Recognition & Expectation</h3>
+            <p>Scams like the "Bouncer" work because people expect patterns to continue and anticipate bigger rewards.</p>
+            
+            <div class="key-point">
+                <strong>Critical Insight:</strong> "Con artists know already how to con you. The reason they get away with it is because you don't know how they operate and you don't recognize it as a scam."
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Practical Security Applications</h2>
+            
+            <h3>Upcoming Training (February 2020, Orlando)</h3>
+            <p>Wilson teased techniques he would teach at the Social Engineering Village training:</p>
+            <ul>
+                <li>Sleight of hand to protect information</li>
+                <li>Palming and switching SD cards when confiscation is demanded</li>
+                <li>Hiding USB sticks and laptops using misdirection</li>
+                <li>Applying magician's techniques to protect personal data</li>
+            </ul>
+            
+            <div class="quote">
+                "I'm going to apply some of that to some things that you may want to do in real life... to have the tools required to distract and gain an advantage in certain situations."
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Key Takeaways for Security Professionals</h2>
+            <ul>
+                <li>Understanding scam mechanics helps recognize and prevent them</li>
+                <li>Social engineering relies heavily on psychological principles, not just technical tricks</li>
+                <li>Even obvious scams work because they target human psychology, not intelligence</li>
+                <li>Authority can be easily fabricated with simple props or confident behavior</li>
+                <li>Protecting information sometimes requires the same techniques used by attackers</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | R Paul Wilson Talk Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
 </body>
 </html>
