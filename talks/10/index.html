@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEF CON 27 Social Engineering Village Notes</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --border: #2d4059;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f2f5;
+            --secondary: #ffffff;
+            --accent: #4a90e2;
+            --highlight: #e74c3c;
+            --text: #2c3e50;
+            --border: #d1d8e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .author {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .nav-btn.disabled:hover {
+            transform: none;
+            background: var(--border);
+        }
+        
+        .talk-info {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight);
+        }
+        
+        .section {
+            background-color: var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: #4fc3f7;
+            margin: 15px 0 10px;
+        }
+
+        [data-theme="light"] h3 {
+            color: #2980b9;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .key-point {
+            background-color: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid var(--highlight);
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        .offensive-point {
+            background-color: rgba(15, 52, 96, 0.2);
+            border-left: 3px solid #4fc3f7;
+            padding: 12px 15px;
+            margin: 15px 0;
+        }
+
+        [data-theme="light"] .offensive-point {
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+        
+        .quote-box {
+            background: rgba(79, 195, 247, 0.1);
+            border-left: 4px solid #4fc3f7;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .technique-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .technique-card h4 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .technique-card h4 {
+            color: #2980b9;
+        }
+
+        .principle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .principle-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 3px solid #FFC107;
+        }
+
+        .sign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sign-card {
+            background: var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .step-process {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .step-item {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9C27B0;
+        }
+
+        .step-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #9C27B0;
+            margin-bottom: 10px;
+        }
+
+        .anchor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .anchor-card {
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #E91E63;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+
+            .theme-toggle {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+
+            .technique-grid, .principle-grid, .sign-grid, .anchor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <h1>DEF CON 27 Social Engineering Village Notes</h1>
+            <p class="subtitle">Robin Dreeke - Sizing People Up</p>
+            <p class="author">Notes By Aryan Giri</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../09" class="nav-btn">← Previous Talk</a>
+            <a href="../11" class="nav-btn disabled">Next Talk →</a>
+        </div>
+
+        <div class="talk-info">
+            <p><strong>Speaker:</strong> Robin Dreeke, Former FBI Behavioral Analysis Program Leader, Author</p>
+            <p><strong>Background:</strong> 21-year FBI career specializing in counterintelligence and spy recruitment, Naval Academy graduate, Marine Corps officer</p>
+            <p><strong>Key Focus:</strong> The art and science of building trust, understanding human behavior, and ethical relationship development</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Foundation: Core Human Psychology</h2>
+            <p>Robin Dreeke shares decades of experience from FBI counterintelligence work, focusing on the fundamental principles that drive human behavior and trust-building.</p>
+            
+            <div class="key-point">
+                <strong>Core Human Drive:</strong> "Every human being is hardwired to want to belong to meaningful groups and organizations and to be valued by those groups and organizations."
+            </div>
+            
+            <h3>Fundamental Human Truths:</h3>
+            <ul>
+                <li>Everyone acts in their own best interests</li>
+                <li>People want to belong and be valued</li>
+                <li>Trust is about predictability, not necessarily morals</li>
+                <li>All achievements come through relationships</li>
+                <li>People are chemically rewarded for being accepted non-judgmentally</li>
+            </ul>
+
+            <div class="quote-box">
+                "No one in this room got here by yourself. Everything you've achieved in life came from a relationship - a mentor, a guide, someone of inspiration."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Golden Mantra: Leave Them Better For Having Met You</h2>
+            
+            <div class="key-point">
+                <strong>Chris Hadnagy's Introduction:</strong> "I took one very core lesson away from Robin that I have made the mantra of all of my training: leave them feeling better for having met you."
+            </div>
+
+            <h3>The Neuroscience of Connection:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Damine Release</h4>
+                    <p>Harvard study shows people talk about themselves 40% of daily conversation, triggering pleasure centers when accepted non-judgmentally</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Chemical Rewards</h4>
+                    <p>Sex, drugs, rock and roll, chocolate, and non-judgmental validation all trigger similar pleasure responses in the brain</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Tribal Hardwiring</h4>
+                    <p>Ancient brain is hardwired for survival through tribe affiliation and being valued by the group</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Professional Mission:</strong> "My entire job for 21 years with the FBI was recruiting spies. If I wasn't recruiting spies, I was recruiting people around spies to tell me about the spies."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Four Pillars of Trust Building</h2>
+            
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <h4>Seek Thoughts & Opinions</h4>
+                    <p>Demonstrate value by asking for and genuinely considering others' perspectives</p>
+                </div>
+                
+                <div class="principle-card">
+                    <h4>Talk in Their Priorities</h4>
+                    <p>Frame conversations around what matters to them, not what matters to you</p>
+                </div>
+                
+                <div class="principle-card">
+                    <h4>Non-Judgmental Validation</h4>
+                    <p>Understand and accept without necessarily agreeing - shields go down</p>
+                </div>
+                
+                <div class="principle-card">
+                    <h4>Empower with Choices</h4>
+                    <p>Give people autonomy and control over decisions and interactions</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>The Elusive Obvious:</strong> "If I seek your thoughts and opinions about what you think, I'm demonstrating that value. If I talk in terms of your priorities, that's completely about you. If I validate everything you just said without judging, shields are completely down."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Code of Trust: Five-Step Process</h2>
+            
+            <div class="step-process">
+                <div class="step-item">
+                    <div class="step-number">Step 1</div>
+                    <h4>Define Your Goal</h4>
+                    <p>Clearly understand what you're trying to achieve while maintaining leadership position and direction</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">Step 2</div>
+                    <h4>Understand Their Priorities</h4>
+                    <p>Discover needs, dreams, aspirations - what makes them want to get up and live another day</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">Step 3</div>
+                    <h4>See Through Their Context</h4>
+                    <p>Understand their perspective based on generation, ethnicity, gender, orientation, and experiences</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">Step 4</div>
+                    <h4>Make It About Them</h4>
+                    <p>Apply the four pillars: seek thoughts, talk priorities, validate, empower with choices</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">Step 5</div>
+                    <h4>Craft the Encounter</h4>
+                    <p>Structure interactions to naturally overlap resources and priorities, ending with choice about maintaining contact</p>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                "You don't plant seeds with people by telling them what you think. You plant seeds with people by asking them what they think."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Three Core Anchors for Every Engagement</h2>
+            
+            <div class="anchor-grid">
+                <div class="anchor-card">
+                    <h4>Healthy Professional Relationship</h4>
+                    <p>Constantly ask: "Is what I'm about to say or do going to help or hinder a healthy relationship?" Nothing moves forward without healthy relationships.</p>
+                </div>
+                
+                <div class="anchor-card">
+                    <h4>Open Honest Communication</h4>
+                    <p>Maintain transparency in all interactions. If you can't have transparency, you won't have healthy relationships.</p>
+                </div>
+                
+                <div class="anchor-card">
+                    <h4>Available Resource with No Expectation</h4>
+                    <p>Make yourself available for others' success and prosperity with zero expectation of reciprocity. Expectations make it about you.</p>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <strong>Relationship Philosophy:</strong> "I will leave this relationship and interaction so that I will have a healthy professional relationship. I ask myself: is what I'm about to say or do going to help or hinder a healthy relationship?"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Sizing People Up: The Six Signs</h2>
+            <p>From Dreeke's upcoming book "Sizing People Up" - six behavioral signs to assess relationship potential and predictability.</p>
+            
+            <div class="sign-grid">
+                <div class="sign-card">
+                    <h4>1. Vesting</h4>
+                    <p>Do they freely give resources for your success with no expectation of reciprocity? Willingness to invest in your priorities.</p>
+                </div>
+                
+                <div class="sign-card">
+                    <h4>2. Longevity</h4>
+                    <p>Do they see the relationship as long-term or short-term? Commitment to enduring connection versus transactional interaction.</p>
+                </div>
+                
+                <div class="sign-card">
+                    <h4>3. Reliability</h4>
+                    <p>Can they do what they say they'll do? Assessment of energy, talent, skills, and willingness to commit.</p>
+                </div>
+                
+                <div class="sign-card">
+                    <h4>4. Actions (Past Patterns)</h4>
+                    <p>Observing consistent behavioral patterns over time. "If I observe you 2, 3, 4, 10, 20 times, I know what you'll do next."</p>
+                </div>
+                
+                <div class="sign-card">
+                    <h4>5. Language</h4>
+                    <p>Are they using the trust-building pillars with you? Seeking your thoughts, talking your priorities, validating, giving choices.</p>
+                </div>
+                
+                <div class="sign-card">
+                    <h4>6. Emotional Stability</h4>
+                    <p>Ability to regulate emotions and avoid emotional hijacking. Crazy brain makes people oblivious to relationship resources.</p>
+                </div>
+            </div>
+
+            <div class="offensive-point">
+                <strong>Behavioral Assessment:</strong> "These are six behavior signs that I was basically using throughout my career to understand: what are you gonna do? Can we have a healthy relationship?"
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Practical Application Techniques</h2>
+            
+            <h3>Conversation Starters:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>Non-Judgmental Validation</h4>
+                    <p>Begin with validation of strength, attribute, or action. Find people's greatness rather than probing weaknesses.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Assistance Theme</h4>
+                    <p>Leverage human hardwiring to render assistance. "Can I get your thoughts and opinions on something?" combines assistance with value demonstration.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Transparency Offset</h4>
+                    <p>When time-constrained, use transparency about constraints to build trust rather than manipulation.</p>
+                </div>
+            </div>
+
+            <h3>Relationship Accelerators:</h3>
+            <ul>
+                <li><strong>Time:</strong> Amount of time spent together</li>
+                <li><strong>Closeness:</strong> Medium of interaction (Twitter vs. email vs. live meeting)</li>
+                <li><strong>Intensity:</strong> Content depth and emotional engagement of conversations</li>
+            </ul>
+
+            <div class="key-point">
+                <strong>De-escalation Strategy:</strong> "When I pick up on stress indicators, I immediately say: 'I said something a little off, help me understand please. What did I do wrong?' Always make it my issue, my problem I caused."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Advanced Insights & Professional Applications</h2>
+            
+            <h3>Counterintelligence Challenges:</h3>
+            <div class="technique-grid">
+                <div class="technique-card">
+                    <h4>The Hardest Sales Job</h4>
+                    <p>Selling patriotism to foreign intelligence officers who don't want to buy, haven't committed crimes, and don't have to talk to you</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Resource Alignment</h4>
+                    <p>Discovering priorities and offering resources to further those priorities - the fundamental mechanism of influence</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Long-term vs Short-term</h4>
+                    <p>Social engineering for information vs. building long-term operational relationships require different approaches</p>
+                </div>
+            </div>
+
+            <h3>Self-Awareness and Growth:</h3>
+            <div class="key-point">
+                <strong>Personal Transformation:</strong> "I'm a hardcore Type-A ENTJ - extroverted, intuitive, thinking, judger. When you're 20 years old, that's narcissistic mental maniac. Now I've castigated new behaviors on top of that foundation."
+            </div>
+
+            <div class="offensive-point">
+                <strong>Maturity Definition:</strong> "Your ability to maneuver around every situation with every human being - not because I'm trying to gain on you, but I'm trying to make it about you so we can have a healthy relationship."
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Takeaways & Ethical Framework</h2>
+            
+            <h3>Essential Principles:</h3>
+            <ol>
+                <li>Trust is predictability - manage expectations rather than judge morals</li>
+                <li>All achievement comes through relationships - no one succeeds alone</li>
+                <li>Inspire rather than convince - make it about their priorities, not your persuasion</li>
+                <li>Non-judgmental validation is chemically rewarding - it's not about agreement</li>
+                <li>Transparency and no expectation of reciprocity prevent manipulation</li>
+                <li>Focus on finding people's greatness rather than probing weaknesses</li>
+            </ol>
+
+            <div class="key-point">
+                <strong>Final Wisdom:</strong> "The whole point in every interaction is: I have resources to make you feel good, you have resources that make me feel good. Can we exchange resources? That's it."
+            </div>
+
+            <h3>Recommended Resources:</h3>
+            <ul>
+                <li>Books: "The Code of Trust" and upcoming "Sizing People Up"</li>
+                <li>Online courses through Robin's website and cohort programs</li>
+                <li>YouTube channel and LinkedIn for ongoing content</li>
+                <li>Innocent Lives Foundation for child protection advocacy</li>
+                <li>SC Village Orlando conference for social engineering training</li>
+            </ul>
+
+            <div class="quote-box">
+                "Life's a journey, not a destination. I never held yesterday against you for today because that's resentment, that's anger, that's discontentment. I do not do emotional crazy because it brings nothing of trust, nothing in relationships."
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../.." class="nav-btn">← Back to Home</a>
+            <a href="../09" class="nav-btn">← Previous Talk</a>
+            <a href="../11" class="nav-btn disabled">Next Talk →</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>DEF CON 27 Social Engineering Village | Robin Dreeke Trust Building Notes</p>
+            <p>Compiled by Aryan Giri | Educational purposes only</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to set cookie
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = `expires=${date.toUTCString()}`;
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Check for saved theme preference or default to dark
+        const currentTheme = getCookie('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+
+        // Toggle theme function
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            setCookie('theme', newTheme, 365);
+            updateThemeButton(newTheme);
+        }
+
+        // Update theme button appearance
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
